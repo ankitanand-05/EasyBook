@@ -41,14 +41,13 @@
   <header class="border-b border-[#DCDCDC] dark:border-[#242424] px-6 md:px-12 py-5 sticky top-0 bg-white/95 dark:bg-[#0E0E0E]/95 backdrop-blur z-40">
     <div class="max-w-7xl mx-auto flex justify-between items-center">
       <div class="flex items-center space-x-8">
-        <span class="text-xl font-bold tracking-tighter uppercase">EasyBook</span>
-        <nav class="hidden md:flex space-x-6 text-xs uppercase tracking-wider">
-          <button onclick="switchTab('bookingTab')" id="nav-bookingTab" class="tab-link tab-active py-1">Booking Hub</button>
-          <button onclick="switchTab('calendarTab')" id="nav-calendarTab" class="tab-link py-1 text-black/60 dark:text-white/60">Interactive Calendar</button>
-          <button onclick="switchTab('directoryTab')" id="nav-directoryTab" class="tab-link py-1 text-black/60 dark:text-white/60">Resource Directory</button>
-          <button onclick="switchTab('historyTab')" id="nav-historyTab" class="tab-link py-1 text-black/60 dark:text-white/60">User History</button>
-          <button onclick="switchTab('adminTab')" id="nav-adminTab" class="tab-link py-1 text-black/60 dark:text-white/60">Operations & Analytics</button>
-        </nav>
+        <div class="flex items-center space-x-2">
+          <span class="text-xl font-bold tracking-tighter uppercase">EasyBook</span>
+          <span id="roleBadge" class="text-[9px] uppercase tracking-widest font-bold px-2 py-0.5 rounded-full border border-black dark:border-white"></span>
+        </div>
+
+        <!-- Dynamic Navigation Links -->
+        <nav id="navContainer" class="hidden md:flex space-x-6 text-xs uppercase tracking-wider"></nav>
       </div>
 
       <div class="flex items-center space-x-3">
@@ -56,6 +55,7 @@
           LIGHT MODE
         </button>
 
+        <!-- Alerts Dropdown -->
         <div class="relative">
           <button id="notifBtn" class="text-xs border border-[#DCDCDC] dark:border-[#333] px-3 py-1.5 rounded-full flex items-center space-x-1.5">
             <span>Alerts</span>
@@ -72,7 +72,7 @@
           </div>
         </div>
 
-        <span id="userBadge" class="text-xs hidden lg:inline text-black/70 dark:text-white/70">alex@easybook.io</span>
+        <span id="userBadge" class="text-xs hidden lg:inline text-black/70 dark:text-white/70"></span>
         <button id="logoutBtn" class="text-xs uppercase tracking-widest bg-black text-white dark:bg-white dark:text-black px-4 py-1.5 rounded-full hover:opacity-80 transition">
           Sign Out
         </button>
@@ -82,19 +82,19 @@
 
   <!-- Workspaces -->
   <main class="max-w-7xl mx-auto px-6 md:px-12 py-10 flex-1 w-full space-y-12">
-    
-    <!-- Tab 1: Booking Engine & Conflict Resolver -->
-    <div id="bookingTab" class="tab-content space-y-12">
+
+    <!-- ==================== CUSTOMER VIEW: BOOKING HUB ==================== -->
+    <div id="customerBookingTab" class="tab-content hidden space-y-12">
       <section class="border-b border-[#DCDCDC] dark:border-[#242424] pb-6 flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
         <div>
-          <span class="text-xs uppercase tracking-widest text-black/50 dark:text-white/50">Schedule Management</span>
+          <span class="text-xs uppercase tracking-widest text-black/50 dark:text-white/50">Customer Workspace</span>
           <h1 class="text-4xl md:text-6xl font-bold tracking-tight mt-1">Smart Scheduling.</h1>
         </div>
         <p class="text-xs text-black/60 dark:text-white/60 max-w-sm">Test conflict detection by booking <strong>Conference Room A</strong> on <strong>2026-08-25</strong> at <strong>10:00 - 11:30</strong>.</p>
       </section>
 
       <section class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        <!-- Booking Form with Static Fallback Options to Prevent Empty Select -->
+        <!-- Customer Booking Form -->
         <div class="lg:col-span-5 space-y-5">
           <h2 class="text-xs uppercase tracking-widest font-bold">Create Reservation</h2>
           <form id="bookingForm" class="space-y-4 bg-[#FAFAFA] dark:bg-[#161616] p-6 border border-[#DCDCDC] dark:border-[#2C2C2C]">
@@ -180,9 +180,9 @@
         </div>
       </section>
 
-      <!-- Active Bookings Table -->
+      <!-- Customer Bookings Table -->
       <section class="space-y-4">
-        <h2 class="text-xs uppercase tracking-widest font-bold">Current Active Bookings</h2>
+        <h2 class="text-xs uppercase tracking-widest font-bold">My Active Reservations</h2>
         <div class="border border-[#DCDCDC] dark:border-[#2C2C2C] overflow-x-auto">
           <table class="w-full text-left text-xs">
             <thead class="bg-[#FAFAFA] dark:bg-[#161616] border-b border-[#DCDCDC] dark:border-[#2C2C2C] uppercase tracking-wider">
@@ -193,100 +193,27 @@
                 <th class="p-3.5">Attendees</th>
                 <th class="p-3.5">Purpose</th>
                 <th class="p-3.5">Status</th>
-                <th class="p-3.5">QR Check-In</th>
+                <th class="p-3.5">Access Pass</th>
                 <th class="p-3.5 text-right">Action</th>
               </tr>
             </thead>
-            <tbody id="bookingsTableBody" class="divide-y divide-[#DCDCDC] dark:divide-[#2C2C2C]"></tbody>
+            <tbody id="customerBookingsTable" class="divide-y divide-[#DCDCDC] dark:divide-[#2C2C2C]"></tbody>
           </table>
         </div>
       </section>
     </div>
 
-    <!-- Tab 2: Interactive Working Calendar -->
-    <div id="calendarTab" class="tab-content hidden space-y-8">
+    <!-- ==================== ADMIN VIEW: OPERATIONS & APPROVALS ==================== -->
+    <div id="adminOpsTab" class="tab-content hidden space-y-10">
       <section class="border-b border-[#DCDCDC] dark:border-[#242424] pb-6 flex justify-between items-end">
         <div>
-          <span class="text-xs uppercase tracking-widest text-black/50 dark:text-white/50">Interactive Grid</span>
-          <h1 class="text-3xl md:text-5xl font-bold tracking-tight mt-1">Resource Calendar.</h1>
+          <span class="text-xs uppercase tracking-widest text-black/50 dark:text-white/50">Admin Console</span>
+          <h1 class="text-3xl md:text-5xl font-bold tracking-tight mt-1">Resource Operations.</h1>
         </div>
-        <span class="text-xs font-semibold uppercase tracking-wider text-black/60 dark:text-white/60">August 2026</span>
+        <span class="text-xs uppercase font-bold tracking-widest bg-black text-white dark:bg-white dark:text-black px-3 py-1 rounded-full">Admin Privileges Active</span>
       </section>
 
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        <div class="lg:col-span-8 border border-[#DCDCDC] dark:border-[#2C2C2C] p-6 bg-[#FAFAFA] dark:bg-[#161616]">
-          <div class="grid grid-cols-7 text-center text-[10px] uppercase font-bold tracking-wider mb-4 text-black/60 dark:text-white/60">
-            <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
-          </div>
-          <div id="calendarGrid" class="grid grid-cols-7 gap-2 text-center text-xs"></div>
-        </div>
-
-        <div class="lg:col-span-4 border border-[#DCDCDC] dark:border-[#2C2C2C] p-6 flex flex-col justify-between">
-          <div>
-            <span class="text-[10px] uppercase font-bold tracking-widest text-black/50 dark:text-white/50">Day Schedule</span>
-            <h3 id="calSelectedDateTitle" class="text-xl font-bold mt-1">2026-08-25</h3>
-            <div id="calDaySchedule" class="mt-4 space-y-3 text-xs"></div>
-          </div>
-          <button onclick="switchTab('bookingTab')" class="w-full mt-6 bg-black text-white dark:bg-white dark:text-black py-2.5 rounded-full text-xs uppercase tracking-wider font-semibold">
-            Reserve For This Date
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Tab 3: Resource Catalogue Directory -->
-    <div id="directoryTab" class="tab-content hidden space-y-8">
-      <section class="border-b border-[#DCDCDC] dark:border-[#242424] pb-6 flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
-        <div>
-          <span class="text-xs uppercase tracking-widest text-black/50 dark:text-white/50">Institutional Catalog</span>
-          <h1 class="text-3xl md:text-5xl font-bold tracking-tight mt-1">Resource Directory.</h1>
-        </div>
-        <div class="flex gap-2 w-full md:w-auto">
-          <input type="text" id="dirSearch" placeholder="Search labs, equipment, halls..." class="bg-[#FAFAFA] dark:bg-[#161616] border border-[#DCDCDC] dark:border-[#333] px-4 py-2 text-xs w-full md:w-64 focus:outline-none">
-          <select id="dirCategory" class="bg-[#FAFAFA] dark:bg-[#161616] border border-[#DCDCDC] dark:border-[#333] px-3 py-2 text-xs focus:outline-none">
-            <option value="ALL">All Categories</option>
-            <option value="Meeting Rooms">Meeting Rooms</option>
-            <option value="Seminar Halls">Seminar Halls</option>
-            <option value="Labs & Equipment">Labs & Equipment</option>
-            <option value="Sports Facilities">Sports Facilities</option>
-            <option value="Workspaces">Workspaces</option>
-          </select>
-        </div>
-      </section>
-
-      <div id="resourceGrid" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
-    </div>
-
-    <!-- Tab 4: User Booking History -->
-    <div id="historyTab" class="tab-content hidden space-y-6">
-      <section class="border-b border-[#DCDCDC] dark:border-[#242424] pb-6">
-        <span class="text-xs uppercase tracking-widest text-black/50 dark:text-white/50">Audit & Log</span>
-        <h1 class="text-3xl md:text-5xl font-bold tracking-tight mt-1">Booking History.</h1>
-      </section>
-      <div class="border border-[#DCDCDC] dark:border-[#2C2C2C] overflow-x-auto">
-        <table class="w-full text-left text-xs">
-          <thead class="bg-[#FAFAFA] dark:bg-[#161616] border-b border-[#DCDCDC] dark:border-[#2C2C2C] uppercase tracking-wider">
-            <tr>
-              <th class="p-3.5">Booking ID</th>
-              <th class="p-3.5">Resource</th>
-              <th class="p-3.5">Date & Time</th>
-              <th class="p-3.5">Purpose</th>
-              <th class="p-3.5">Check-In Status</th>
-              <th class="p-3.5">Status</th>
-            </tr>
-          </thead>
-          <tbody id="historyTableBody" class="divide-y divide-[#DCDCDC] dark:divide-[#2C2C2C]"></tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- Tab 5: Admin Panel & Analytics Dashboard -->
-    <div id="adminTab" class="tab-content hidden space-y-10">
-      <section class="border-b border-[#DCDCDC] dark:border-[#242424] pb-6">
-        <span class="text-xs uppercase tracking-widest text-black/50 dark:text-white/50">Admin Console</span>
-        <h1 class="text-3xl md:text-5xl font-bold tracking-tight mt-1">Usage Analytics & Admin.</h1>
-      </section>
-
+      <!-- Institutional Metrics Dashboard -->
       <section class="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div class="border border-[#DCDCDC] dark:border-[#2C2C2C] bg-[#FAFAFA] dark:bg-[#161616] p-5">
           <span class="text-[10px] uppercase font-bold tracking-wider text-black/50 dark:text-white/50">Total Resources</span>
@@ -306,8 +233,29 @@
         </div>
       </section>
 
+      <!-- Pending Approval Queue -->
+      <section class="space-y-4">
+        <h2 class="text-xs uppercase tracking-widest font-bold">Pending Booking Approvals Queue</h2>
+        <div class="border border-[#DCDCDC] dark:border-[#2C2C2C] overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-[#FAFAFA] dark:bg-[#161616] border-b border-[#DCDCDC] dark:border-[#2C2C2C] uppercase tracking-wider">
+              <tr>
+                <th class="p-3.5">User</th>
+                <th class="p-3.5">Resource</th>
+                <th class="p-3.5">Date & Time</th>
+                <th class="p-3.5">Purpose</th>
+                <th class="p-3.5">Status</th>
+                <th class="p-3.5 text-right">Approval Decision</th>
+              </tr>
+            </thead>
+            <tbody id="adminApprovalTable" class="divide-y divide-[#DCDCDC] dark:divide-[#2C2C2C]"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Provision New Resource -->
       <section class="border border-[#DCDCDC] dark:border-[#2C2C2C] p-6 space-y-4">
-        <h3 class="text-xs font-bold uppercase tracking-wider">Admin: Provision Resource</h3>
+        <h3 class="text-xs font-bold uppercase tracking-wider">Provision New Shared Resource</h3>
         <form id="addResourceForm" class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
           <input type="text" id="newResName" placeholder="Resource Name (e.g. Squash Court 2)" required class="border border-[#DCDCDC] dark:border-[#333] bg-white dark:bg-[#0E0E0E] p-2.5">
           <select id="newResCat" class="border border-[#DCDCDC] dark:border-[#333] bg-white dark:bg-[#0E0E0E] p-2.5">
@@ -330,15 +278,93 @@
         </form>
       </section>
 
+      <!-- Optimization Insights -->
       <section class="border border-[#DCDCDC] dark:border-[#2C2C2C] p-6 space-y-3">
         <h3 class="text-xs font-bold uppercase tracking-wider">Usage Optimization Insights</h3>
         <div id="underutilizedList" class="space-y-2 text-xs"></div>
       </section>
     </div>
 
+    <!-- ==================== COMMON TAB: INTERACTIVE CALENDAR ==================== -->
+    <div id="calendarTab" class="tab-content hidden space-y-8">
+      <section class="border-b border-[#DCDCDC] dark:border-[#242424] pb-6 flex justify-between items-end">
+        <div>
+          <span class="text-xs uppercase tracking-widest text-black/50 dark:text-white/50">Schedule Grid</span>
+          <h1 class="text-3xl md:text-5xl font-bold tracking-tight mt-1">Resource Calendar.</h1>
+        </div>
+        <span class="text-xs font-semibold uppercase tracking-wider text-black/60 dark:text-white/60">August 2026</span>
+      </section>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <div class="lg:col-span-8 border border-[#DCDCDC] dark:border-[#2C2C2C] p-6 bg-[#FAFAFA] dark:bg-[#161616]">
+          <div class="grid grid-cols-7 text-center text-[10px] uppercase font-bold tracking-wider mb-4 text-black/60 dark:text-white/60">
+            <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+          </div>
+          <div id="calendarGrid" class="grid grid-cols-7 gap-2 text-center text-xs"></div>
+        </div>
+
+        <div class="lg:col-span-4 border border-[#DCDCDC] dark:border-[#2C2C2C] p-6 flex flex-col justify-between">
+          <div>
+            <span class="text-[10px] uppercase font-bold tracking-widest text-black/50 dark:text-white/50">Day Schedule</span>
+            <h3 id="calSelectedDateTitle" class="text-xl font-bold mt-1">2026-08-25</h3>
+            <div id="calDaySchedule" class="mt-4 space-y-3 text-xs"></div>
+          </div>
+          <button id="calActionBtn" class="w-full mt-6 bg-black text-white dark:bg-white dark:text-black py-2.5 rounded-full text-xs uppercase tracking-wider font-semibold">
+            Reserve For This Date
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== COMMON TAB: RESOURCE DIRECTORY ==================== -->
+    <div id="directoryTab" class="tab-content hidden space-y-8">
+      <section class="border-b border-[#DCDCDC] dark:border-[#242424] pb-6 flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
+        <div>
+          <span class="text-xs uppercase tracking-widest text-black/50 dark:text-white/50">Institutional Catalog</span>
+          <h1 class="text-3xl md:text-5xl font-bold tracking-tight mt-1">Resource Directory.</h1>
+        </div>
+        <div class="flex gap-2 w-full md:w-auto">
+          <input type="text" id="dirSearch" placeholder="Search labs, equipment, halls..." class="bg-[#FAFAFA] dark:bg-[#161616] border border-[#DCDCDC] dark:border-[#333] px-4 py-2 text-xs w-full md:w-64 focus:outline-none">
+          <select id="dirCategory" class="bg-[#FAFAFA] dark:bg-[#161616] border border-[#DCDCDC] dark:border-[#333] px-3 py-2 text-xs focus:outline-none">
+            <option value="ALL">All Categories</option>
+            <option value="Meeting Rooms">Meeting Rooms</option>
+            <option value="Seminar Halls">Seminar Halls</option>
+            <option value="Labs & Equipment">Labs & Equipment</option>
+            <option value="Sports Facilities">Sports Facilities</option>
+            <option value="Workspaces">Workspaces</option>
+          </select>
+        </div>
+      </section>
+
+      <div id="resourceGrid" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
+    </div>
+
+    <!-- ==================== CUSTOMER TAB: USER HISTORY ==================== -->
+    <div id="historyTab" class="tab-content hidden space-y-6">
+      <section class="border-b border-[#DCDCDC] dark:border-[#242424] pb-6">
+        <span class="text-xs uppercase tracking-widest text-black/50 dark:text-white/50">Personal Audit</span>
+        <h1 class="text-3xl md:text-5xl font-bold tracking-tight mt-1">My Booking History.</h1>
+      </section>
+      <div class="border border-[#DCDCDC] dark:border-[#2C2C2C] overflow-x-auto">
+        <table class="w-full text-left text-xs">
+          <thead class="bg-[#FAFAFA] dark:bg-[#161616] border-b border-[#DCDCDC] dark:border-[#2C2C2C] uppercase tracking-wider">
+            <tr>
+              <th class="p-3.5">Booking ID</th>
+              <th class="p-3.5">Resource</th>
+              <th class="p-3.5">Date & Time</th>
+              <th class="p-3.5">Purpose</th>
+              <th class="p-3.5">Check-In Status</th>
+              <th class="p-3.5">Status</th>
+            </tr>
+          </thead>
+          <tbody id="historyTableBody" class="divide-y divide-[#DCDCDC] dark:divide-[#2C2C2C]"></tbody>
+        </table>
+      </div>
+    </div>
+
   </main>
 
-  <!-- Bonus: Physical QR Check-In Terminal Modal -->
+  <!-- Physical QR Check-In Terminal Modal -->
   <div id="qrModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
     <div class="bg-white dark:bg-[#161616] border border-[#DCDCDC] dark:border-[#333] p-8 max-w-sm w-full text-center space-y-4">
       <span class="text-[10px] uppercase font-bold tracking-widest bg-black text-white dark:bg-white dark:text-black px-2 py-0.5">Physical QR Check-In</span>
@@ -360,7 +386,6 @@
   </footer>
 
   <script>
-    // In-memory institutional data fallback
     let currentResources = [
       { id: 'res-1', name: 'Conference Room A', category: 'Meeting Rooms', location: 'Building B · 3rd Floor', capacity: 10, equipment: ['4K Display', 'Video Conferencing', 'Whiteboard'], utilization: 78, approvalRequired: false, status: 'active' },
       { id: 'res-2', name: 'Conference Room B', category: 'Meeting Rooms', location: 'Building B · 2nd Floor', capacity: 12, equipment: ['4K Display', 'Dual Microphones', 'Whiteboard'], utilization: 42, approvalRequired: false, status: 'active' },
@@ -382,7 +407,7 @@
     let selectedCalDate = '2026-08-25';
     let activeQrBookingId = null;
 
-    // Theme Switcher
+    // Theme Management
     const themeToggleBtn = document.getElementById('themeToggle');
     const savedTheme = localStorage.getItem('easybook_theme') || 'dark';
 
@@ -403,17 +428,46 @@
       applyTheme(isDark ? 'light' : 'dark');
     });
 
-    // Session Management
+    // Session & Role Setup
     const rawUserData = localStorage.getItem('easybook_user');
     const currentUser = rawUserData ? JSON.parse(rawUserData) : { email: 'alex@easybook.io', role: 'customer' };
+    
     document.getElementById('userBadge').innerText = currentUser.email;
+    const roleBadge = document.getElementById('roleBadge');
+    roleBadge.innerText = currentUser.role === 'admin' ? 'Admin Portal' : 'Customer';
 
     document.getElementById('logoutBtn').addEventListener('click', () => {
       localStorage.removeItem('easybook_user');
       window.location.href = 'login.html';
     });
 
-    // Tab Navigation
+    // Configure Role-Based Dynamic Navigation
+    function setupRoleNavigation() {
+      const navContainer = document.getElementById('navContainer');
+      navContainer.innerHTML = '';
+
+      if (currentUser.role === 'admin') {
+        navContainer.innerHTML = `
+          <button onclick="switchTab('adminOpsTab')" id="nav-adminOpsTab" class="tab-link tab-active py-1">Operations & Approvals</button>
+          <button onclick="switchTab('calendarTab')" id="nav-calendarTab" class="tab-link py-1 text-black/60 dark:text-white/60">Interactive Calendar</button>
+          <button onclick="switchTab('directoryTab')" id="nav-directoryTab" class="tab-link py-1 text-black/60 dark:text-white/60">Resource Directory</button>
+        `;
+        document.getElementById('calActionBtn').innerText = 'View System Load';
+        document.getElementById('calActionBtn').onclick = () => switchTab('adminOpsTab');
+        switchTab('adminOpsTab');
+      } else {
+        navContainer.innerHTML = `
+          <button onclick="switchTab('customerBookingTab')" id="nav-customerBookingTab" class="tab-link tab-active py-1">Booking Hub</button>
+          <button onclick="switchTab('calendarTab')" id="nav-calendarTab" class="tab-link py-1 text-black/60 dark:text-white/60">Interactive Calendar</button>
+          <button onclick="switchTab('directoryTab')" id="nav-directoryTab" class="tab-link py-1 text-black/60 dark:text-white/60">Resource Directory</button>
+          <button onclick="switchTab('historyTab')" id="nav-historyTab" class="tab-link py-1 text-black/60 dark:text-white/60">My Bookings</button>
+        `;
+        document.getElementById('calActionBtn').innerText = 'Reserve For This Date';
+        document.getElementById('calActionBtn').onclick = () => switchTab('customerBookingTab');
+        switchTab('customerBookingTab');
+      }
+    }
+
     function switchTab(tabId) {
       document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
       document.querySelectorAll('.tab-link').forEach(el => {
@@ -421,7 +475,9 @@
         el.classList.add('text-black/60', 'dark:text-white/60');
       });
 
-      document.getElementById(tabId).classList.remove('hidden');
+      const targetTab = document.getElementById(tabId);
+      if (targetTab) targetTab.classList.remove('hidden');
+
       const activeNav = document.getElementById(`nav-${tabId}`);
       if (activeNav) {
         activeNav.classList.add('tab-active', 'text-black', 'dark:text-white');
@@ -435,22 +491,23 @@
       document.getElementById('notifDropdown').classList.toggle('hidden');
     });
 
-    // Fetch or Use Fallbacks
+    // Data Loaders & Synchronizers
     async function loadAllData() {
       try {
         const [resData, bkData] = await Promise.all([
           fetch('/api/resources').then(r => r.json()).catch(() => null),
-          fetch(`/api/bookings?user=${currentUser.email}`).then(r => r.json()).catch(() => null)
+          fetch('/api/bookings').then(r => r.json()).catch(() => null)
         ]);
 
         if (resData && resData.data) currentResources = resData.data;
         if (bkData && bkData.data) currentBookings = bkData.data;
       } catch (err) {
-        console.warn('Backend offline, using fallback state.');
+        console.warn('Using offline dataset.');
       }
 
       renderResourceSelect();
-      renderBookingsTable();
+      renderCustomerBookings();
+      renderAdminApprovals();
       renderDirectoryGrid();
       renderHistoryTable();
       renderCalendar();
@@ -459,20 +516,26 @@
 
     function renderResourceSelect() {
       const select = document.getElementById('resourceSelect');
+      if (!select) return;
       const currentVal = select.value;
       select.innerHTML = currentResources.map(r => `
         <option value="${r.id}" ${currentVal === r.id ? 'selected' : ''}>
           ${r.name} · ${r.category} (${r.location}) [Cap: ${r.capacity}]
         </option>
       `).join('');
-      if (!select.value && currentResources.length > 0) {
-        select.value = currentResources[0].id;
-      }
     }
 
-    function renderBookingsTable() {
-      const tbody = document.getElementById('bookingsTableBody');
-      tbody.innerHTML = currentBookings.map(b => `
+    function renderCustomerBookings() {
+      const tbody = document.getElementById('customerBookingsTable');
+      if (!tbody) return;
+      const userBookings = currentBookings.filter(b => b.userEmail === currentUser.email);
+
+      if (userBookings.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" class="p-4 text-center text-black/50 dark:text-white/50">No reservations found. Create one above.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = userBookings.map(b => `
         <tr class="hover:bg-[#FAFAFA] dark:hover:bg-[#161616]">
           <td class="p-3.5 font-semibold">${b.resourceName}</td>
           <td class="p-3.5">${b.date}</td>
@@ -491,12 +554,37 @@
             `}
           </td>
           <td class="p-3.5 text-right">
-            ${b.status === 'pending' && currentUser.role === 'admin' ? `
-              <button onclick="updateBookingStatus('${b.id}', 'confirmed')" class="text-[10px] underline font-bold mr-2">Approve</button>
-              <button onclick="updateBookingStatus('${b.id}', 'cancelled')" class="text-[10px] underline text-red-500">Reject</button>
-            ` : b.status === 'confirmed' ? `
+            ${b.status === 'confirmed' ? `
               <button onclick="updateBookingStatus('${b.id}', 'cancelled')" class="text-[10px] underline">Cancel</button>
-            ` : '—'}
+            ` : '<span class="text-black/40 dark:text-white/40">—</span>'}
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function renderAdminApprovals() {
+      const tbody = document.getElementById('adminApprovalTable');
+      if (!tbody) return;
+      
+      tbody.innerHTML = currentBookings.map(b => `
+        <tr class="hover:bg-[#FAFAFA] dark:hover:bg-[#161616]">
+          <td class="p-3.5 font-medium">${b.userEmail}</td>
+          <td class="p-3.5 font-semibold">${b.resourceName}</td>
+          <td class="p-3.5">${b.date} · ${b.startTime} - ${b.endTime}</td>
+          <td class="p-3.5">${b.purpose}</td>
+          <td class="p-3.5">
+            <span class="px-2 py-0.5 text-[9px] uppercase font-bold tracking-wider ${
+              b.status === 'confirmed' ? 'bg-black text-white dark:bg-white dark:text-black' :
+              b.status === 'pending' ? 'border border-black dark:border-white' : 'line-through text-black/50'
+            }">${b.status}</span>
+          </td>
+          <td class="p-3.5 text-right">
+            ${b.status === 'pending' ? `
+              <button onclick="updateBookingStatus('${b.id}', 'confirmed')" class="text-[10px] uppercase tracking-wider font-bold bg-black text-white dark:bg-white dark:text-black px-2.5 py-1 rounded-full mr-1.5">Approve</button>
+              <button onclick="updateBookingStatus('${b.id}', 'cancelled')" class="text-[10px] uppercase tracking-wider border border-red-500 text-red-500 px-2.5 py-1 rounded-full">Reject</button>
+            ` : `
+              <button onclick="updateBookingStatus('${b.id}', 'cancelled')" class="text-[10px] underline text-black/60 dark:text-white/60">Revoke</button>
+            `}
           </td>
         </tr>
       `).join('');
@@ -504,7 +592,10 @@
 
     function renderHistoryTable() {
       const tbody = document.getElementById('historyTableBody');
-      tbody.innerHTML = currentBookings.map(b => `
+      if (!tbody) return;
+      const historyList = currentUser.role === 'admin' ? currentBookings : currentBookings.filter(b => b.userEmail === currentUser.email);
+      
+      tbody.innerHTML = historyList.map(b => `
         <tr class="hover:bg-[#FAFAFA] dark:hover:bg-[#161616]">
           <td class="p-3.5 font-mono">${b.id}</td>
           <td class="p-3.5 font-semibold">${b.resourceName}</td>
@@ -518,6 +609,7 @@
 
     function renderCalendar() {
       const grid = document.getElementById('calendarGrid');
+      if (!grid) return;
       grid.innerHTML = '';
       
       for (let i = 0; i < 6; i++) {
@@ -543,17 +635,20 @@
 
     window.selectCalendarDate = function(dateStr) {
       selectedCalDate = dateStr;
-      document.getElementById('bookingDate').value = dateStr;
+      const dateInp = document.getElementById('bookingDate');
+      if (dateInp) dateInp.value = dateStr;
       renderCalendar();
     };
 
     function renderSelectedDateTimeline() {
-      document.getElementById('calSelectedDateTitle').innerText = selectedCalDate;
+      const titleEl = document.getElementById('calSelectedDateTitle');
+      if (titleEl) titleEl.innerText = selectedCalDate;
       const list = currentBookings.filter(b => b.date === selectedCalDate);
       const container = document.getElementById('calDaySchedule');
+      if (!container) return;
       
       if (list.length === 0) {
-        container.innerHTML = `<p class="text-black/50 dark:text-white/50">No reservations booked on this date. All resources cleared.</p>`;
+        container.innerHTML = `<p class="text-black/50 dark:text-white/50">No reservations booked on this date.</p>`;
         return;
       }
 
@@ -594,9 +689,13 @@
               <p>Requires Approval: <strong>${r.approvalRequired ? 'Yes' : 'No'}</strong></p>
             </div>
           </div>
-          <button onclick="prefillBooking('${r.id}')" class="w-full bg-black text-white dark:bg-white dark:text-black text-xs uppercase tracking-widest font-semibold py-2.5 rounded-full">
-            Book This Resource
-          </button>
+          ${currentUser.role === 'customer' ? `
+            <button onclick="prefillBooking('${r.id}')" class="w-full bg-black text-white dark:bg-white dark:text-black text-xs uppercase tracking-widest font-semibold py-2.5 rounded-full">
+              Book This Resource
+            </button>
+          ` : `
+            <span class="text-center text-xs text-black/50 dark:text-white/50">Utilization: ${r.utilization}%</span>
+          `}
         </div>
       `).join('');
     }
@@ -604,23 +703,32 @@
     function renderAnalytics() {
       const total = currentResources.length;
       const avgUtil = Math.round(currentResources.reduce((acc, r) => acc + r.utilization, 0) / total);
-      document.getElementById('statTotalRes').innerText = total;
-      document.getElementById('statActiveBk').innerText = currentBookings.length;
-      document.getElementById('statAvgUtil').innerText = `${avgUtil}%`;
-      document.getElementById('statPending').innerText = currentBookings.filter(b => b.status === 'pending').length;
+      
+      const elRes = document.getElementById('statTotalRes');
+      if (elRes) elRes.innerText = total;
+      const elBk = document.getElementById('statActiveBk');
+      if (elBk) elBk.innerText = currentBookings.length;
+      const elUt = document.getElementById('statAvgUtil');
+      if (elUt) elUt.innerText = `${avgUtil}%`;
+      const elPd = document.getElementById('statPending');
+      if (elPd) elPd.innerText = currentBookings.filter(b => b.status === 'pending').length;
 
       const underutilized = currentResources.filter(r => r.utilization < 35);
-      document.getElementById('underutilizedList').innerHTML = underutilized.map(u => `
-        <div class="flex justify-between border-b border-[#DCDCDC] dark:border-[#333] py-2">
-          <span>${u.name} (${u.location})</span>
-          <span class="font-bold">${u.utilization}% load</span>
-        </div>
-      `).join('');
+      const listEl = document.getElementById('underutilizedList');
+      if (listEl) {
+        listEl.innerHTML = underutilized.map(u => `
+          <div class="flex justify-between border-b border-[#DCDCDC] dark:border-[#333] py-2">
+            <span>${u.name} (${u.location})</span>
+            <span class="font-bold">${u.utilization}% load</span>
+          </div>
+        `).join('');
+      }
     }
 
     window.prefillBooking = function(id) {
-      document.getElementById('resourceSelect').value = id;
-      switchTab('bookingTab');
+      const select = document.getElementById('resourceSelect');
+      if (select) select.value = id;
+      switchTab('customerBookingTab');
     };
 
     window.updateBookingStatus = async function(id, status) {
@@ -636,7 +744,7 @@
       loadAllData();
     };
 
-    // QR Bonus Feature
+    // QR Bonus Terminal Modal
     window.openQrModal = function(bookingId, resourceName) {
       activeQrBookingId = bookingId;
       document.getElementById('qrModalTitle').innerText = resourceName;
@@ -668,7 +776,7 @@
         });
       } catch (e) {}
       closeQrModal();
-      alert('Terminal check-in verified successfully!');
+      alert('Access verified successfully!');
       loadAllData();
     });
 
@@ -678,153 +786,163 @@
       return h * 60 + m;
     };
 
-    // Verify & Reserve Form Submission
-    document.getElementById('bookingForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const statusBox = document.getElementById('bookingStateMsg');
-      const smartCard = document.getElementById('smartCard');
+    // Customer Form Verification & Reservation
+    const bookingFormEl = document.getElementById('bookingForm');
+    if (bookingFormEl) {
+      bookingFormEl.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const statusBox = document.getElementById('bookingStateMsg');
+        const smartCard = document.getElementById('smartCard');
 
-      const resourceId = document.getElementById('resourceSelect').value;
-      const date = document.getElementById('bookingDate').value;
-      const startTime = document.getElementById('startTime').value;
-      const endTime = document.getElementById('endTime').value;
-      const attendees = Number(document.getElementById('attendees').value);
-      const purpose = document.getElementById('purpose').value;
+        const resourceId = document.getElementById('resourceSelect').value;
+        const date = document.getElementById('bookingDate').value;
+        const startTime = document.getElementById('startTime').value;
+        const endTime = document.getElementById('endTime').value;
+        const attendees = Number(document.getElementById('attendees').value);
+        const purpose = document.getElementById('purpose').value;
 
-      const targetResource = currentResources.find(r => r.id === resourceId) || currentResources[0];
-      const reqStart = toMinutes(startTime);
-      const reqEnd = toMinutes(endTime);
+        const targetResource = currentResources.find(r => r.id === resourceId) || currentResources[0];
+        const reqStart = toMinutes(startTime);
+        const reqEnd = toMinutes(endTime);
 
-      // Local Collision Validation
-      const hasConflict = currentBookings.some(b => {
-        if (b.resourceId === resourceId && b.date === date && (b.status === 'confirmed' || b.status === 'pending')) {
-          const bStart = toMinutes(b.startTime);
-          const bEnd = toMinutes(b.endTime);
-          return reqStart < bEnd && reqEnd > bStart;
+        // Local Collision Detection
+        const hasConflict = currentBookings.some(b => {
+          if (b.resourceId === resourceId && b.date === date && (b.status === 'confirmed' || b.status === 'pending')) {
+            const bStart = toMinutes(b.startTime);
+            const bEnd = toMinutes(b.endTime);
+            return reqStart < bEnd && reqEnd > bStart;
+          }
+          return false;
+        });
+
+        if (hasConflict) {
+          const alt = currentResources.find(r => r.category === targetResource.category && r.id !== targetResource.id && r.capacity >= attendees) || targetResource;
+          currentRec = {
+            resourceId: alt.id,
+            resourceName: alt.name,
+            date: date,
+            startTime: '11:30',
+            endTime: '13:00',
+            score: 94,
+            reasons: [
+              `Accommodates ${attendees} attendees comfortably (Cap: ${alt.capacity})`,
+              `Matches required setup: ${alt.equipment[0] || 'Standard Setup'}`,
+              'Zero double-booking collision',
+              `Balances departmental utilization (${alt.utilization}% load)`
+            ]
+          };
+
+          statusBox.innerHTML = `
+            <h3 class="text-3xl font-bold tracking-tight text-black dark:text-white">That's already booked.</h3>
+            <p class="text-xs text-black/70 dark:text-white/70 mt-1">This slot overlaps with an existing reservation. Deterministic AI recommended the best match.</p>
+          `;
+          document.getElementById('recName').innerText = currentRec.resourceName;
+          document.getElementById('recWindow').innerText = `${currentRec.date} · ${currentRec.startTime} – ${currentRec.endTime}`;
+          document.getElementById('recScore').innerText = `${currentRec.score}%`;
+          document.getElementById('recReasons').innerHTML = currentRec.reasons.map(r => `<li>✓ ${r}</li>`).join('');
+          smartCard.classList.remove('hidden');
+          return;
         }
-        return false;
-      });
 
-      if (hasConflict) {
-        const alt = currentResources.find(r => r.category === targetResource.category && r.id !== targetResource.id && r.capacity >= attendees) || targetResource;
-        currentRec = {
-          resourceId: alt.id,
-          resourceName: alt.name,
-          date: date,
-          startTime: '11:30',
-          endTime: '13:00',
-          score: 94,
-          reasons: [
-            `Accommodates ${attendees} attendees comfortably (Cap: ${alt.capacity})`,
-            `Matches required setup: ${alt.equipment[0] || 'Standard Setup'}`,
-            'Zero double-booking collision',
-            `Balances departmental utilization (${alt.utilization}% load)`
-          ]
+        // Add confirmed/pending booking
+        const newBooking = {
+          id: `bk-${Date.now().toString().slice(-4)}`,
+          resourceId: targetResource.id,
+          resourceName: targetResource.name,
+          userEmail: currentUser.email,
+          date,
+          startTime,
+          endTime,
+          durationMinutes: (reqEnd - reqStart) || 90,
+          attendees,
+          purpose,
+          status: targetResource.approvalRequired ? 'pending' : 'confirmed',
+          checkedIn: false
         };
 
+        currentBookings.unshift(newBooking);
+        smartCard.classList.add('hidden');
         statusBox.innerHTML = `
-          <h3 class="text-3xl font-bold tracking-tight text-black dark:text-white">That's already booked.</h3>
-          <p class="text-xs text-black/70 dark:text-white/70 mt-1">This resource is already booked for this window. Deterministic AI recommended the best match.</p>
+          <h3 class="text-3xl font-bold tracking-tight text-black dark:text-white">Booking confirmed.</h3>
+          <p class="text-xs text-black/70 dark:text-white/70 mt-1">Resource clearance verified conflict-free.</p>
         `;
-        document.getElementById('recName').innerText = currentRec.resourceName;
-        document.getElementById('recWindow').innerText = `${currentRec.date} · ${currentRec.startTime} – ${currentRec.endTime}`;
-        document.getElementById('recScore').innerText = `${currentRec.score}%`;
-        document.getElementById('recReasons').innerHTML = currentRec.reasons.map(r => `<li>✓ ${r}</li>`).join('');
-        smartCard.classList.remove('hidden');
-        return;
-      }
 
-      // Successful Booking Execution
-      const newBooking = {
-        id: `bk-${Date.now().toString().slice(-4)}`,
-        resourceId: targetResource.id,
-        resourceName: targetResource.name,
-        userEmail: currentUser.email,
-        date,
-        startTime,
-        endTime,
-        durationMinutes: (reqEnd - reqStart) || 90,
-        attendees,
-        purpose,
-        status: targetResource.approvalRequired ? 'pending' : 'confirmed',
-        checkedIn: false
-      };
+        try {
+          await fetch('/api/bookings', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(newBooking)
+          });
+        } catch (e) {}
 
-      currentBookings.unshift(newBooking);
-      smartCard.classList.add('hidden');
-      statusBox.innerHTML = `
-        <h3 class="text-3xl font-bold tracking-tight text-black dark:text-white">Booking confirmed.</h3>
-        <p class="text-xs text-black/70 dark:text-white/70 mt-1">Resource clearance verified conflict-free.</p>
-      `;
+        loadAllData();
+      });
+    }
 
-      try {
-        await fetch('/api/bookings', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(newBooking)
-        });
-      } catch (e) {}
+    // Smart Match Action
+    const applyRecBtn = document.getElementById('applyRecBtn');
+    if (applyRecBtn) {
+      applyRecBtn.addEventListener('click', () => {
+        if (!currentRec) return;
+        document.getElementById('resourceSelect').value = currentRec.resourceId;
+        document.getElementById('startTime').value = currentRec.startTime;
+        document.getElementById('endTime').value = currentRec.endTime;
 
-      loadAllData();
-    });
+        const altResource = currentResources.find(r => r.id === currentRec.resourceId);
+        const newBooking = {
+          id: `bk-${Date.now().toString().slice(-4)}`,
+          resourceId: currentRec.resourceId,
+          resourceName: altResource.name,
+          userEmail: currentUser.email,
+          date: currentRec.date,
+          startTime: currentRec.startTime,
+          endTime: currentRec.endTime,
+          durationMinutes: 90,
+          attendees: Number(document.getElementById('attendees').value),
+          purpose: document.getElementById('purpose').value,
+          status: 'confirmed',
+          checkedIn: false
+        };
 
-    // Accept Alternative Match Action
-    document.getElementById('applyRecBtn').addEventListener('click', () => {
-      if (!currentRec) return;
-      document.getElementById('resourceSelect').value = currentRec.resourceId;
-      document.getElementById('startTime').value = currentRec.startTime;
-      document.getElementById('endTime').value = currentRec.endTime;
+        currentBookings.unshift(newBooking);
+        document.getElementById('smartCard').classList.add('hidden');
+        document.getElementById('bookingStateMsg').innerHTML = `
+          <h3 class="text-3xl font-bold tracking-tight text-black dark:text-white">Smart Match Booked.</h3>
+          <p class="text-xs text-black/70 dark:text-white/70 mt-1">Reserved ${currentRec.resourceName} at ${currentRec.startTime}.</p>
+        `;
+        loadAllData();
+      });
+    }
 
-      const altResource = currentResources.find(r => r.id === currentRec.resourceId);
-      const newBooking = {
-        id: `bk-${Date.now().toString().slice(-4)}`,
-        resourceId: currentRec.resourceId,
-        resourceName: altResource.name,
-        userEmail: currentUser.email,
-        date: currentRec.date,
-        startTime: currentRec.startTime,
-        endTime: currentRec.endTime,
-        durationMinutes: 90,
-        attendees: Number(document.getElementById('attendees').value),
-        purpose: document.getElementById('purpose').value,
-        status: 'confirmed',
-        checkedIn: false
-      };
+    // Admin Resource Creation
+    const addResourceForm = document.getElementById('addResourceForm');
+    if (addResourceForm) {
+      addResourceForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const newRes = {
+          id: `res-${Date.now().toString().slice(-4)}`,
+          name: document.getElementById('newResName').value,
+          category: document.getElementById('newResCat').value,
+          location: document.getElementById('newResLoc').value,
+          capacity: Number(document.getElementById('newResCap').value),
+          equipment: document.getElementById('newResEq').value.split(',').map(s => s.trim()),
+          approvalRequired: document.getElementById('newResApp').checked,
+          utilization: 10,
+          status: 'active'
+        };
 
-      currentBookings.unshift(newBooking);
-      document.getElementById('smartCard').classList.add('hidden');
-      document.getElementById('bookingStateMsg').innerHTML = `
-        <h3 class="text-3xl font-bold tracking-tight text-black dark:text-white">Smart Match Booked.</h3>
-        <p class="text-xs text-black/70 dark:text-white/70 mt-1">Reserved ${currentRec.resourceName} at ${currentRec.startTime}.</p>
-      `;
-      loadAllData();
-    });
-
-    // Provision Resource
-    document.getElementById('addResourceForm').addEventListener('submit', (e) => {
-      e.preventDefault();
-      const newRes = {
-        id: `res-${Date.now().toString().slice(-4)}`,
-        name: document.getElementById('newResName').value,
-        category: document.getElementById('newResCat').value,
-        location: document.getElementById('newResLoc').value,
-        capacity: Number(document.getElementById('newResCap').value),
-        equipment: document.getElementById('newResEq').value.split(',').map(s => s.trim()),
-        approvalRequired: document.getElementById('newResApp').checked,
-        utilization: 10,
-        status: 'active'
-      };
-
-      currentResources.unshift(newRes);
-      document.getElementById('addResourceForm').reset();
-      loadAllData();
-      alert('Resource provisioned successfully.');
-    });
+        currentResources.unshift(newRes);
+        addResourceForm.reset();
+        loadAllData();
+        alert('New shared resource provisioned.');
+      });
+    }
 
     document.getElementById('dirSearch').addEventListener('input', renderDirectoryGrid);
     document.getElementById('dirCategory').addEventListener('change', renderDirectoryGrid);
 
-    // Initial Load
+    // Initial Execution
+    setupRoleNavigation();
     loadAllData();
   </script>
 </body>

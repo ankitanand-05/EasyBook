@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EasyBook — Sign In & Register</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              white: '#FFFFFF',
+              nearWhite: '#FAFAFA',
+              lightGray: '#DCDCDC',
+              darkGray: '#1C1C1C',
+              black: '#000000'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .auth-tab.active { border-bottom: 2px solid currentColor; font-weight: 700; color: inherit; }
+  </style>
+</head>
+<body class="bg-white dark:bg-[#0E0E0E] text-black dark:text-white min-h-screen flex flex-col justify-between p-6 md:p-12 transition-colors duration-300">
+
+  <!-- Header -->
+  <header class="flex justify-between items-center w-full max-w-5xl mx-auto">
+    <div class="flex items-center space-x-3">
+      <span class="text-xl font-bold tracking-tighter uppercase">EasyBook</span>
+      <span class="text-[10px] tracking-widest uppercase border border-[#DCDCDC] dark:border-[#2C2C2C] px-2 py-0.5 rounded-full text-black/60 dark:text-white/60">SaaS Platform</span>
+    </div>
+    <button id="themeToggle" class="text-xs uppercase tracking-wider border border-[#DCDCDC] dark:border-[#333] px-3.5 py-1.5 rounded-full hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition">
+      LIGHT MODE
+    </button>
+  </header>
+
+  <!-- Dual-Role Auth Terminal -->
+  <main class="w-full max-w-md mx-auto my-8">
+    <div class="mb-6 text-center md:text-left">
+      <h1 class="text-3xl md:text-5xl font-bold tracking-tight mb-2">Book smarter.<br>Use resources better.</h1>
+      <p class="text-xs text-black/60 dark:text-white/60">Unified resource scheduling with conflict detection & live analytics.</p>
+    </div>
+
+    <!-- Main Container -->
+    <div class="bg-[#FAFAFA] dark:bg-[#161616] border border-[#DCDCDC] dark:border-[#2C2C2C] p-6 space-y-6">
+      
+      <!-- Role Switcher -->
+      <div class="grid grid-cols-2 gap-2 p-1 bg-white dark:bg-[#0E0E0E] border border-[#DCDCDC] dark:border-[#2C2C2C] text-xs uppercase tracking-wider font-semibold text-center">
+        <button type="button" id="roleCustomerBtn" onclick="selectRole('customer')" class="py-2 bg-black text-white dark:bg-white dark:text-black transition">
+          Customer Portal
+        </button>
+        <button type="button" id="roleAdminBtn" onclick="selectRole('admin')" class="py-2 text-black/60 dark:text-white/60 transition">
+          Admin Portal
+        </button>
+      </div>
+
+      <!-- Action Mode Tabs (Login vs Sign Up) -->
+      <div class="flex border-b border-[#DCDCDC] dark:border-[#2C2C2C] text-xs uppercase tracking-widest">
+        <button id="tabLogin" onclick="setAuthMode('login')" class="auth-tab active flex-1 pb-2 text-center">Sign In</button>
+        <button id="tabSignup" onclick="setAuthMode('signup')" class="auth-tab flex-1 pb-2 text-center text-black/50 dark:text-white/50">Register</button>
+      </div>
+
+      <!-- Form Component -->
+      <form id="authForm" class="space-y-4 text-xs">
+        <div id="nameField" class="hidden">
+          <label class="block text-[10px] uppercase font-bold tracking-widest mb-1">Full Name</label>
+          <input type="text" id="nameInput" placeholder="Jane Doe" class="w-full bg-white dark:bg-[#0E0E0E] border border-[#DCDCDC] dark:border-[#333] px-3.5 py-2.5 focus:outline-none">
+        </div>
+
+        <div>
+          <label class="block text-[10px] uppercase font-bold tracking-widest mb-1">Email Address</label>
+          <input type="email" id="emailInput" required value="alex@easybook.io" placeholder="alex@easybook.io" class="w-full bg-white dark:bg-[#0E0E0E] border border-[#DCDCDC] dark:border-[#333] px-3.5 py-2.5 focus:outline-none">
+        </div>
+
+        <div>
+          <label class="block text-[10px] uppercase font-bold tracking-widest mb-1">Password</label>
+          <input type="password" id="passwordInput" required value="password123" placeholder="••••••••" class="w-full bg-white dark:bg-[#0E0E0E] border border-[#DCDCDC] dark:border-[#333] px-3.5 py-2.5 focus:outline-none">
+        </div>
+
+        <div id="authAlert" class="text-xs text-red-500 hidden font-medium"></div>
+
+        <button type="submit" id="authSubmitBtn" class="w-full bg-black text-white dark:bg-white dark:text-black uppercase tracking-widest font-bold py-3.5 rounded-full hover:opacity-90 transition">
+          Sign In as Customer
+        </button>
+      </form>
+
+      <!-- Quick Credentials Helper for Demo -->
+      <div class="border-t border-[#DCDCDC] dark:border-[#2C2C2C] pt-3 text-[11px] text-black/50 dark:text-white/50 space-y-1">
+        <p><strong>Demo Customer:</strong> alex@easybook.io / password123</p>
+        <p><strong>Demo Admin:</strong> admin@easybook.io / adminpassword</p>
+      </div>
+    </div>
+  </main>
+
+  <footer class="w-full max-w-5xl mx-auto flex justify-between text-xs text-black/50 dark:text-white/50">
+    <span>© 2026 EasyBook Platform</span>
+    <span>Zero double-booking guarantee</span>
+  </footer>
+
+  <script>
+    let currentRole = 'customer';
+    let currentMode = 'login';
+
+    // Theme Switcher
+    const themeToggleBtn = document.getElementById('themeToggle');
+    const savedTheme = localStorage.getItem('easybook_theme') || 'dark';
+
+    function applyTheme(theme) {
+      if (theme === 'dark') {
+        document.documentElement.classList.add('dark');
+        themeToggleBtn.innerText = 'LIGHT MODE';
+      } else {
+        document.documentElement.classList.remove('dark');
+        themeToggleBtn.innerText = 'DARK MODE';
+      }
+      localStorage.setItem('easybook_theme', theme);
+    }
+    applyTheme(savedTheme);
+
+    themeToggleBtn.addEventListener('click', () => {
+      const isDark = document.documentElement.classList.contains('dark');
+      applyTheme(isDark ? 'light' : 'dark');
+    });
+
+    function selectRole(role) {
+      currentRole = role;
+      const custBtn = document.getElementById('roleCustomerBtn');
+      const admBtn = document.getElementById('roleAdminBtn');
+
+      if (role === 'customer') {
+        custBtn.className = 'py-2 bg-black text-white dark:bg-white dark:text-black transition';
+        admBtn.className = 'py-2 text-black/60 dark:text-white/60 transition';
+        document.getElementById('emailInput').value = 'alex@easybook.io';
+        document.getElementById('passwordInput').value = 'password123';
+      } else {
+        admBtn.className = 'py-2 bg-black text-white dark:bg-white dark:text-black transition';
+        custBtn.className = 'py-2 text-black/60 dark:text-white/60 transition';
+        document.getElementById('emailInput').value = 'admin@easybook.io';
+        document.getElementById('passwordInput').value = 'adminpassword';
+      }
+      updateButtonText();
+    }
+
+    function setAuthMode(mode) {
+      currentMode = mode;
+      const loginTab = document.getElementById('tabLogin');
+      const signupTab = document.getElementById('tabSignup');
+      const nameField = document.getElementById('nameField');
+
+      if (mode === 'login') {
+        loginTab.classList.add('active');
+        loginTab.classList.remove('text-black/50', 'dark:text-white/50');
+        signupTab.classList.remove('active');
+        signupTab.classList.add('text-black/50', 'dark:text-white/50');
+        nameField.classList.add('hidden');
+      } else {
+        signupTab.classList.add('active');
+        signupTab.classList.remove('text-black/50', 'dark:text-white/50');
+        loginTab.classList.remove('active');
+        loginTab.classList.add('text-black/50', 'dark:text-white/50');
+        nameField.classList.remove('hidden');
+      }
+      updateButtonText();
+    }
+
+    function updateButtonText() {
+      const btn = document.getElementById('authSubmitBtn');
+      const roleTitle = currentRole === 'admin' ? 'Admin' : 'Customer';
+      btn.innerText = currentMode === 'login' ? `Sign In as ${roleTitle}` : `Create ${roleTitle} Account`;
+    }
+
+    // Form Submission
+    document.getElementById('authForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const alertBox = document.getElementById('authAlert');
+      alertBox.classList.add('hidden');
+
+      const payload = {
+        email: document.getElementById('emailInput').value,
+        password: document.getElementById('passwordInput').value,
+        role: currentRole,
+        name: document.getElementById('nameInput').value
+      };
+
+      const endpoint = currentMode === 'login' ? '/api/auth/login' : '/api/auth/register';
+
+      try {
+        const res = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          localStorage.setItem('easybook_user', JSON.stringify(data.user));
+          window.location.href = 'dashboard.html';
+        } else {
+          alertBox.innerText = data.message || 'Authentication error';
+          alertBox.classList.remove('hidden');
+        }
+      } catch (err) {
+        // Fallback for isolated offline runs
+        localStorage.setItem('easybook_user', JSON.stringify({ email: payload.email, role: currentRole }));
+        window.location.href = 'dashboard.html';
+      }
+    });
+  </script>
+</body>
+</html>
