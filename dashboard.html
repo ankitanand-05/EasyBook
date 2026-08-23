@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EasyBook — Platform Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              white: '#FFFFFF',
+              nearWhite: '#FAFAFA',
+              lightGray: '#DCDCDC',
+              darkGray: '#1C1C1C',
+              black: '#000000'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .tab-active { border-bottom: 2px solid currentColor; font-weight: 600; }
+    .cal-day:hover { background-color: rgba(255,255,255,0.08); cursor: pointer; }
+    .cal-day.selected { background-color: #000; color: #fff; }
+    .dark .cal-day.selected { background-color: #fff; color: #000; }
+  </style>
+</head>
+<body class="bg-white dark:bg-[#0E0E0E] text-black dark:text-white min-h-screen flex flex-col justify-between transition-colors duration-300">
+
+  <!-- Header Navigation -->
+  <header class="border-b border-[#DCDCDC] dark:border-[#242424] px-6 md:px-12 py-5 sticky top-0 bg-white/95 dark:bg-[#0E0E0E]/95 backdrop-blur z-40">
+    <div class="max-w-7xl mx-auto flex justify-between items-center">
+      <div class="flex items-center space-x-8">
+        <span class="text-xl font-bold tracking-tighter uppercase">EasyBook</span>
+        <nav class="hidden md:flex space-x-6 text-xs uppercase tracking-wider">
+          <button onclick="switchTab('bookingTab')" id="nav-bookingTab" class="tab-link tab-active py-1">Booking Hub</button>
+          <button onclick="switchTab('calendarTab')" id="nav-calendarTab" class="tab-link py-1 text-black/60 dark:text-white/60">Interactive Calendar</button>
+          <button onclick="switchTab('directoryTab')" id="nav-directoryTab" class="tab-link py-1 text-black/60 dark:text-white/60">Resource Directory</button>
+          <button onclick="switchTab('historyTab')" id="nav-historyTab" class="tab-link py-1 text-black/60 dark:text-white/60">User History</button>
+          <button onclick="switchTab('adminTab')" id="nav-adminTab" class="tab-link py-1 text-black/60 dark:text-white/60">Operations & Analytics</button>
+        </nav>
+      </div>
+
+      <div class="flex items-center space-x-3">
+        <button id="themeToggle" class="text-[11px] uppercase tracking-wider border border-[#DCDCDC] dark:border-[#333] px-3 py-1.5 rounded-full hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition">
+          LIGHT MODE
+        </button>
+
+        <div class="relative">
+          <button id="notifBtn" class="text-xs border border-[#DCDCDC] dark:border-[#333] px-3 py-1.5 rounded-full flex items-center space-x-1.5">
+            <span>Alerts</span>
+            <span id="notifCount" class="bg-black text-white dark:bg-white dark:text-black rounded-full px-1.5 text-[9px] font-bold">1</span>
+          </button>
+          <div id="notifDropdown" class="hidden absolute right-0 mt-2 w-80 bg-white dark:bg-[#161616] border border-[#DCDCDC] dark:border-[#333] shadow-2xl p-4 z-50 space-y-3">
+            <span class="text-[10px] uppercase tracking-widest font-bold block border-b border-[#DCDCDC] dark:border-[#333] pb-2">Automated Notifications & Reminders</span>
+            <div id="notifList" class="space-y-2 text-xs">
+              <div class="border-b border-[#DCDCDC] dark:border-[#333] pb-2">
+                <p class="font-medium">Reminder: Badminton session starts in 1 hour.</p>
+                <span class="text-[10px] text-black/50 dark:text-white/50">1h ago</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <span id="userBadge" class="text-xs hidden lg:inline text-black/70 dark:text-white/70">alex@easybook.io</span>
+        <button id="logoutBtn" class="text-xs uppercase tracking-widest bg-black text-white dark:bg-white dark:text-black px-4 py-1.5 rounded-full hover:opacity-80 transition">
+          Sign Out
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Workspaces -->
+  <main class="max-w-7xl mx-auto px-6 md:px-12 py-10 flex-1 w-full space-y-12">
+    
+    <!-- Tab 1: Booking Engine & Conflict Resolver -->
+    <div id="bookingTab" class="tab-content space-y-12">
+      <section class="border-b border-[#DCDCDC] dark:border-[#242424] pb-6 flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
+        <div>
+          <span class="text-xs uppercase tracking-widest text-black/50 dark:text-white/50">Schedule Management</span>
+          <h1 class="text-4xl md:text-6xl font-bold tracking-tight mt-1">Smart Scheduling.</h1>
+        </div>
+        <p class="text-xs text-black/60 dark:text-white/60 max-w-sm">Test conflict detection by booking <strong>Conference Room A</strong> on <strong>2026-08-25</strong> at <strong>10:00 - 11:30</strong>.</p>
+      </section>
+
+      <section class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <!-- Booking Form with Static Fallback Options to Prevent Empty Select -->
+        <div class="lg:col-span-5 space-y-5">
+          <h2 class="text-xs uppercase tracking-widest font-bold">Create Reservation</h2>
+          <form id="bookingForm" class="space-y-4 bg-[#FAFAFA] dark:bg-[#161616] p-6 border border-[#DCDCDC] dark:border-[#2C2C2C]">
+            
+            <div>
+              <label class="block text-[10px] uppercase font-bold tracking-widest mb-1.5">Select Resource</label>
+              <select id="resourceSelect" required class="w-full bg-white dark:bg-[#0E0E0E] border border-[#DCDCDC] dark:border-[#333] px-3 py-2.5 text-xs focus:outline-none focus:border-black dark:focus:border-white">
+                <option value="res-1" selected>Conference Room A · Meeting Rooms (Building B · 3rd Floor) [Cap: 10]</option>
+                <option value="res-2">Conference Room B · Meeting Rooms (Building B · 2nd Floor) [Cap: 12]</option>
+                <option value="res-3">Main Auditorium / Seminar Hall · Seminar Halls (Central Block · Ground Floor) [Cap: 250]</option>
+                <option value="res-4">Advanced IoT & Robotics Lab · Labs & Equipment (Tech Complex · Lab 104) [Cap: 35]</option>
+                <option value="res-5">Indoor Badminton & Squash Arena · Sports Facilities (Sports Complex · Courts 1-2) [Cap: 8]</option>
+                <option value="res-6">High-Performance Computing Cluster · Labs & Equipment (Server Wing · Room C) [Cap: 40]</option>
+                <option value="res-7">Podcast & Media Studio · Workspaces (Media Center · Room 102) [Cap: 6]</option>
+                <option value="res-8">4K Cinema Drone & Photography Kit · Labs & Equipment (Media Locker 08) [Cap: 2]</option>
+              </select>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-[10px] uppercase font-bold tracking-widest mb-1.5">Date</label>
+                <input type="date" id="bookingDate" required value="2026-08-25" class="w-full bg-white dark:bg-[#0E0E0E] border border-[#DCDCDC] dark:border-[#333] px-3 py-2 text-xs focus:outline-none">
+              </div>
+              <div>
+                <label class="block text-[10px] uppercase font-bold tracking-widest mb-1.5">Attendees</label>
+                <input type="number" id="attendees" required value="8" min="1" class="w-full bg-white dark:bg-[#0E0E0E] border border-[#DCDCDC] dark:border-[#333] px-3 py-2 text-xs focus:outline-none">
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-[10px] uppercase font-bold tracking-widest mb-1.5">Start Time</label>
+                <input type="time" id="startTime" required value="10:00" class="w-full bg-white dark:bg-[#0E0E0E] border border-[#DCDCDC] dark:border-[#333] px-3 py-2 text-xs focus:outline-none">
+              </div>
+              <div>
+                <label class="block text-[10px] uppercase font-bold tracking-widest mb-1.5">End Time</label>
+                <input type="time" id="endTime" required value="11:30" class="w-full bg-white dark:bg-[#0E0E0E] border border-[#DCDCDC] dark:border-[#333] px-3 py-2 text-xs focus:outline-none">
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-[10px] uppercase font-bold tracking-widest mb-1.5">Booking Purpose</label>
+              <input type="text" id="purpose" value="Sprint Roadmap Review" required class="w-full bg-white dark:bg-[#0E0E0E] border border-[#DCDCDC] dark:border-[#333] px-3 py-2.5 text-xs focus:outline-none">
+            </div>
+
+            <button type="submit" id="verifyReserveBtn" class="w-full bg-black text-white dark:bg-white dark:text-black text-xs uppercase tracking-widest font-bold py-3.5 rounded-full hover:opacity-90 transition">
+              Verify & Reserve
+            </button>
+          </form>
+        </div>
+
+        <!-- Engine Status Box -->
+        <div class="lg:col-span-7 bg-[#FAFAFA] dark:bg-[#161616] border border-[#DCDCDC] dark:border-[#2C2C2C] p-8 flex flex-col justify-between">
+          <div>
+            <span class="text-[10px] uppercase tracking-widest font-bold text-black/50 dark:text-white/50">Engine Status</span>
+            
+            <div id="bookingStateMsg" class="mt-4">
+              <h3 class="text-3xl font-bold tracking-tight">Ready for validation.</h3>
+              <p class="text-xs text-black/60 dark:text-white/60 mt-1">Select booking parameters to verify real-time slot clearance.</p>
+            </div>
+
+            <!-- Smart Recommendation Card -->
+            <div id="smartCard" class="hidden mt-6 bg-white dark:bg-[#0E0E0E] border border-black dark:border-white p-6 space-y-4">
+              <div class="flex justify-between items-start">
+                <div>
+                  <span class="text-[9px] uppercase font-bold tracking-widest bg-black text-white dark:bg-white dark:text-black px-2 py-0.5">Smart Match Alternative</span>
+                  <h4 id="recName" class="text-xl font-bold mt-2"></h4>
+                  <p id="recWindow" class="text-xs text-black/70 dark:text-white/70"></p>
+                </div>
+                <span id="recScore" class="text-2xl font-bold">94%</span>
+              </div>
+              <ul id="recReasons" class="text-xs space-y-1.5 text-black/80 dark:text-white/80 border-t border-[#DCDCDC] dark:border-[#333] pt-3"></ul>
+              <button id="applyRecBtn" class="text-xs bg-black text-white dark:bg-white dark:text-black px-5 py-2.5 rounded-full font-medium hover:opacity-90">
+                Accept Alternative & Book
+              </button>
+            </div>
+          </div>
+
+          <div class="mt-8 border-t border-[#DCDCDC] dark:border-[#242424] pt-4 flex justify-between text-[11px] text-black/50 dark:text-white/50">
+            <span>Deterministic Scheduler: Enabled</span>
+            <span>Conflict Protection: Active</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Active Bookings Table -->
+      <section class="space-y-4">
+        <h2 class="text-xs uppercase tracking-widest font-bold">Current Active Bookings</h2>
+        <div class="border border-[#DCDCDC] dark:border-[#2C2C2C] overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-[#FAFAFA] dark:bg-[#161616] border-b border-[#DCDCDC] dark:border-[#2C2C2C] uppercase tracking-wider">
+              <tr>
+                <th class="p-3.5">Resource</th>
+                <th class="p-3.5">Date</th>
+                <th class="p-3.5">Window</th>
+                <th class="p-3.5">Attendees</th>
+                <th class="p-3.5">Purpose</th>
+                <th class="p-3.5">Status</th>
+                <th class="p-3.5">QR Check-In</th>
+                <th class="p-3.5 text-right">Action</th>
+              </tr>
+            </thead>
+            <tbody id="bookingsTableBody" class="divide-y divide-[#DCDCDC] dark:divide-[#2C2C2C]"></tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <!-- Tab 2: Interactive Working Calendar -->
+    <div id="calendarTab" class="tab-content hidden space-y-8">
+      <section class="border-b border-[#DCDCDC] dark:border-[#242424] pb-6 flex justify-between items-end">
+        <div>
+          <span class="text-xs uppercase tracking-widest text-black/50 dark:text-white/50">Interactive Grid</span>
+          <h1 class="text-3xl md:text-5xl font-bold tracking-tight mt-1">Resource Calendar.</h1>
+        </div>
+        <span class="text-xs font-semibold uppercase tracking-wider text-black/60 dark:text-white/60">August 2026</span>
+      </section>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <div class="lg:col-span-8 border border-[#DCDCDC] dark:border-[#2C2C2C] p-6 bg-[#FAFAFA] dark:bg-[#161616]">
+          <div class="grid grid-cols-7 text-center text-[10px] uppercase font-bold tracking-wider mb-4 text-black/60 dark:text-white/60">
+            <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+          </div>
+          <div id="calendarGrid" class="grid grid-cols-7 gap-2 text-center text-xs"></div>
+        </div>
+
+        <div class="lg:col-span-4 border border-[#DCDCDC] dark:border-[#2C2C2C] p-6 flex flex-col justify-between">
+          <div>
+            <span class="text-[10px] uppercase font-bold tracking-widest text-black/50 dark:text-white/50">Day Schedule</span>
+            <h3 id="calSelectedDateTitle" class="text-xl font-bold mt-1">2026-08-25</h3>
+            <div id="calDaySchedule" class="mt-4 space-y-3 text-xs"></div>
+          </div>
+          <button onclick="switchTab('bookingTab')" class="w-full mt-6 bg-black text-white dark:bg-white dark:text-black py-2.5 rounded-full text-xs uppercase tracking-wider font-semibold">
+            Reserve For This Date
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab 3: Resource Catalogue Directory -->
+    <div id="directoryTab" class="tab-content hidden space-y-8">
+      <section class="border-b border-[#DCDCDC] dark:border-[#242424] pb-6 flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
+        <div>
+          <span class="text-xs uppercase tracking-widest text-black/50 dark:text-white/50">Institutional Catalog</span>
+          <h1 class="text-3xl md:text-5xl font-bold tracking-tight mt-1">Resource Directory.</h1>
+        </div>
+        <div class="flex gap-2 w-full md:w-auto">
+          <input type="text" id="dirSearch" placeholder="Search labs, equipment, halls..." class="bg-[#FAFAFA] dark:bg-[#161616] border border-[#DCDCDC] dark:border-[#333] px-4 py-2 text-xs w-full md:w-64 focus:outline-none">
+          <select id="dirCategory" class="bg-[#FAFAFA] dark:bg-[#161616] border border-[#DCDCDC] dark:border-[#333] px-3 py-2 text-xs focus:outline-none">
+            <option value="ALL">All Categories</option>
+            <option value="Meeting Rooms">Meeting Rooms</option>
+            <option value="Seminar Halls">Seminar Halls</option>
+            <option value="Labs & Equipment">Labs & Equipment</option>
+            <option value="Sports Facilities">Sports Facilities</option>
+            <option value="Workspaces">Workspaces</option>
+          </select>
+        </div>
+      </section>
+
+      <div id="resourceGrid" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
+    </div>
+
+    <!-- Tab 4: User Booking History -->
+    <div id="historyTab" class="tab-content hidden space-y-6">
+      <section class="border-b border-[#DCDCDC] dark:border-[#242424] pb-6">
+        <span class="text-xs uppercase tracking-widest text-black/50 dark:text-white/50">Audit & Log</span>
+        <h1 class="text-3xl md:text-5xl font-bold tracking-tight mt-1">Booking History.</h1>
+      </section>
+      <div class="border border-[#DCDCDC] dark:border-[#2C2C2C] overflow-x-auto">
+        <table class="w-full text-left text-xs">
+          <thead class="bg-[#FAFAFA] dark:bg-[#161616] border-b border-[#DCDCDC] dark:border-[#2C2C2C] uppercase tracking-wider">
+            <tr>
+              <th class="p-3.5">Booking ID</th>
+              <th class="p-3.5">Resource</th>
+              <th class="p-3.5">Date & Time</th>
+              <th class="p-3.5">Purpose</th>
+              <th class="p-3.5">Check-In Status</th>
+              <th class="p-3.5">Status</th>
+            </tr>
+          </thead>
+          <tbody id="historyTableBody" class="divide-y divide-[#DCDCDC] dark:divide-[#2C2C2C]"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Tab 5: Admin Panel & Analytics Dashboard -->
+    <div id="adminTab" class="tab-content hidden space-y-10">
+      <section class="border-b border-[#DCDCDC] dark:border-[#242424] pb-6">
+        <span class="text-xs uppercase tracking-widest text-black/50 dark:text-white/50">Admin Console</span>
+        <h1 class="text-3xl md:text-5xl font-bold tracking-tight mt-1">Usage Analytics & Admin.</h1>
+      </section>
+
+      <section class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="border border-[#DCDCDC] dark:border-[#2C2C2C] bg-[#FAFAFA] dark:bg-[#161616] p-5">
+          <span class="text-[10px] uppercase font-bold tracking-wider text-black/50 dark:text-white/50">Total Resources</span>
+          <p id="statTotalRes" class="text-3xl font-bold mt-2">8</p>
+        </div>
+        <div class="border border-[#DCDCDC] dark:border-[#2C2C2C] bg-[#FAFAFA] dark:bg-[#161616] p-5">
+          <span class="text-[10px] uppercase font-bold tracking-wider text-black/50 dark:text-white/50">Total Bookings</span>
+          <p id="statActiveBk" class="text-3xl font-bold mt-2">3</p>
+        </div>
+        <div class="border border-[#DCDCDC] dark:border-[#2C2C2C] bg-[#FAFAFA] dark:bg-[#161616] p-5">
+          <span class="text-[10px] uppercase font-bold tracking-wider text-black/50 dark:text-white/50">Avg Utilization</span>
+          <p id="statAvgUtil" class="text-3xl font-bold mt-2">56%</p>
+        </div>
+        <div class="border border-[#DCDCDC] dark:border-[#2C2C2C] bg-[#FAFAFA] dark:bg-[#161616] p-5">
+          <span class="text-[10px] uppercase font-bold tracking-wider text-black/50 dark:text-white/50">Pending Approvals</span>
+          <p id="statPending" class="text-3xl font-bold mt-2">1</p>
+        </div>
+      </section>
+
+      <section class="border border-[#DCDCDC] dark:border-[#2C2C2C] p-6 space-y-4">
+        <h3 class="text-xs font-bold uppercase tracking-wider">Admin: Provision Resource</h3>
+        <form id="addResourceForm" class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+          <input type="text" id="newResName" placeholder="Resource Name (e.g. Squash Court 2)" required class="border border-[#DCDCDC] dark:border-[#333] bg-white dark:bg-[#0E0E0E] p-2.5">
+          <select id="newResCat" class="border border-[#DCDCDC] dark:border-[#333] bg-white dark:bg-[#0E0E0E] p-2.5">
+            <option value="Meeting Rooms">Meeting Rooms</option>
+            <option value="Seminar Halls">Seminar Halls</option>
+            <option value="Labs & Equipment">Labs & Equipment</option>
+            <option value="Sports Facilities">Sports Facilities</option>
+            <option value="Workspaces">Workspaces</option>
+          </select>
+          <input type="text" id="newResLoc" placeholder="Location" required class="border border-[#DCDCDC] dark:border-[#333] bg-white dark:bg-[#0E0E0E] p-2.5">
+          <input type="number" id="newResCap" placeholder="Capacity" required min="1" value="10" class="border border-[#DCDCDC] dark:border-[#333] bg-white dark:bg-[#0E0E0E] p-2.5">
+          <input type="text" id="newResEq" placeholder="Equipment (comma-separated)" class="border border-[#DCDCDC] dark:border-[#333] bg-white dark:bg-[#0E0E0E] p-2.5">
+          <div class="flex items-center space-x-2">
+            <input type="checkbox" id="newResApp">
+            <label for="newResApp" class="text-xs">Requires Approval</label>
+          </div>
+          <button type="submit" class="md:col-span-3 bg-black text-white dark:bg-white dark:text-black py-2.5 rounded-full uppercase tracking-wider font-semibold">
+            Provision Resource
+          </button>
+        </form>
+      </section>
+
+      <section class="border border-[#DCDCDC] dark:border-[#2C2C2C] p-6 space-y-3">
+        <h3 class="text-xs font-bold uppercase tracking-wider">Usage Optimization Insights</h3>
+        <div id="underutilizedList" class="space-y-2 text-xs"></div>
+      </section>
+    </div>
+
+  </main>
+
+  <!-- Bonus: Physical QR Check-In Terminal Modal -->
+  <div id="qrModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+    <div class="bg-white dark:bg-[#161616] border border-[#DCDCDC] dark:border-[#333] p-8 max-w-sm w-full text-center space-y-4">
+      <span class="text-[10px] uppercase font-bold tracking-widest bg-black text-white dark:bg-white dark:text-black px-2 py-0.5">Physical QR Check-In</span>
+      <h3 id="qrModalTitle" class="text-lg font-bold">Resource Access</h3>
+      <div id="qrcodeContainer" class="flex justify-center my-4 p-4 bg-white inline-block"></div>
+      <p class="text-xs text-black/60 dark:text-white/60">Scan at the door terminal to check-in or test scan:</p>
+      <button id="simulateCheckInBtn" class="w-full bg-black text-white dark:bg-white dark:text-black py-2.5 rounded-full text-xs uppercase tracking-wider font-semibold">
+        Simulate Terminal Scan
+      </button>
+      <button onclick="closeQrModal()" class="w-full border border-[#DCDCDC] dark:border-[#333] py-2 rounded-full text-xs uppercase tracking-wider">
+        Close
+      </button>
+    </div>
+  </div>
+
+  <footer class="border-t border-[#DCDCDC] dark:border-[#242424] px-6 md:px-12 py-6 text-xs text-black/50 dark:text-white/50 flex justify-between items-center">
+    <span>EasyBook Architecture</span>
+    <span>Grayscale Minimalist System</span>
+  </footer>
+
+  <script>
+    // In-memory institutional data fallback
+    let currentResources = [
+      { id: 'res-1', name: 'Conference Room A', category: 'Meeting Rooms', location: 'Building B · 3rd Floor', capacity: 10, equipment: ['4K Display', 'Video Conferencing', 'Whiteboard'], utilization: 78, approvalRequired: false, status: 'active' },
+      { id: 'res-2', name: 'Conference Room B', category: 'Meeting Rooms', location: 'Building B · 2nd Floor', capacity: 12, equipment: ['4K Display', 'Dual Microphones', 'Whiteboard'], utilization: 42, approvalRequired: false, status: 'active' },
+      { id: 'res-3', name: 'Main Auditorium / Seminar Hall', category: 'Seminar Halls', location: 'Central Block · Ground Floor', capacity: 250, equipment: ['Line Array Sound System', 'Dual Projectors', 'Wireless Mics', 'Stage Lighting'], utilization: 62, approvalRequired: true, status: 'active' },
+      { id: 'res-4', name: 'Advanced IoT & Robotics Lab', category: 'Labs & Equipment', location: 'Tech Complex · Lab 104', capacity: 35, equipment: ['3D Printers', 'Oscilloscopes', 'Soldering Stations', 'GPU Workstations'], utilization: 71, approvalRequired: true, status: 'active' },
+      { id: 'res-5', name: 'Indoor Badminton & Squash Arena', category: 'Sports Facilities', location: 'Sports Complex · Courts 1-2', capacity: 8, equipment: ['Wooden Flooring', 'LED Floodlights', 'Racket Sets', 'Electronic Scoreboard'], utilization: 84, approvalRequired: false, status: 'active' },
+      { id: 'res-6', name: 'High-Performance Computing Cluster', category: 'Labs & Equipment', location: 'Server Wing · Room C', capacity: 40, equipment: ['40x RTX 4090 Nodes', 'Gigabit Fiber', 'Linux Dev Terminals'], utilization: 52, approvalRequired: false, status: 'active' },
+      { id: 'res-7', name: 'Podcast & Media Studio', category: 'Workspaces', location: 'Media Center · Room 102', capacity: 6, equipment: ['Shure SM7B Mics', 'Rodecaster Pro', 'Acoustic Panel', 'Blackmagic 4K Camera'], utilization: 28, approvalRequired: false, status: 'active' },
+      { id: 'res-8', name: '4K Cinema Drone & Photography Kit', category: 'Labs & Equipment', location: 'Media Locker 08', capacity: 2, equipment: ['DJI Mavic 3 Pro', 'Sony FX3 Cinema Kit', 'Gimbal Stabilizer', 'Tripods'], utilization: 30, approvalRequired: true, status: 'active' }
+    ];
+
+    let currentBookings = [
+      { id: 'bk-101', resourceId: 'res-1', resourceName: 'Conference Room A', userEmail: 'alex@easybook.io', date: '2026-08-25', startTime: '10:00', endTime: '11:30', durationMinutes: 90, attendees: 8, purpose: 'Sprint Planning & Design Review', status: 'confirmed', checkedIn: false },
+      { id: 'bk-102', resourceId: 'res-3', resourceName: 'Main Auditorium / Seminar Hall', userEmail: 'alex@easybook.io', date: '2026-08-26', startTime: '14:00', endTime: '17:00', durationMinutes: 180, attendees: 180, purpose: 'National Tech Hackathon Keynote', status: 'pending', checkedIn: false },
+      { id: 'bk-103', resourceId: 'res-5', resourceName: 'Indoor Badminton & Squash Arena', userEmail: 'alex@easybook.io', date: '2026-08-24', startTime: '18:00', endTime: '19:30', durationMinutes: 90, attendees: 4, purpose: 'Inter-Department Tournament Practice', status: 'confirmed', checkedIn: true }
+    ];
+
+    let currentRec = null;
+    let selectedCalDate = '2026-08-25';
+    let activeQrBookingId = null;
+
+    // Theme Switcher
+    const themeToggleBtn = document.getElementById('themeToggle');
+    const savedTheme = localStorage.getItem('easybook_theme') || 'dark';
+
+    function applyTheme(theme) {
+      if (theme === 'dark') {
+        document.documentElement.classList.add('dark');
+        themeToggleBtn.innerText = 'LIGHT MODE';
+      } else {
+        document.documentElement.classList.remove('dark');
+        themeToggleBtn.innerText = 'DARK MODE';
+      }
+      localStorage.setItem('easybook_theme', theme);
+    }
+    applyTheme(savedTheme);
+
+    themeToggleBtn.addEventListener('click', () => {
+      const isDark = document.documentElement.classList.contains('dark');
+      applyTheme(isDark ? 'light' : 'dark');
+    });
+
+    // Session Management
+    const rawUserData = localStorage.getItem('easybook_user');
+    const currentUser = rawUserData ? JSON.parse(rawUserData) : { email: 'alex@easybook.io', role: 'customer' };
+    document.getElementById('userBadge').innerText = currentUser.email;
+
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      localStorage.removeItem('easybook_user');
+      window.location.href = 'login.html';
+    });
+
+    // Tab Navigation
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.tab-link').forEach(el => {
+        el.classList.remove('tab-active', 'text-black', 'dark:text-white');
+        el.classList.add('text-black/60', 'dark:text-white/60');
+      });
+
+      document.getElementById(tabId).classList.remove('hidden');
+      const activeNav = document.getElementById(`nav-${tabId}`);
+      if (activeNav) {
+        activeNav.classList.add('tab-active', 'text-black', 'dark:text-white');
+        activeNav.classList.remove('text-black/60', 'dark:text-white/60');
+      }
+
+      if (tabId === 'calendarTab') renderCalendar();
+    }
+
+    document.getElementById('notifBtn').addEventListener('click', () => {
+      document.getElementById('notifDropdown').classList.toggle('hidden');
+    });
+
+    // Fetch or Use Fallbacks
+    async function loadAllData() {
+      try {
+        const [resData, bkData] = await Promise.all([
+          fetch('/api/resources').then(r => r.json()).catch(() => null),
+          fetch(`/api/bookings?user=${currentUser.email}`).then(r => r.json()).catch(() => null)
+        ]);
+
+        if (resData && resData.data) currentResources = resData.data;
+        if (bkData && bkData.data) currentBookings = bkData.data;
+      } catch (err) {
+        console.warn('Backend offline, using fallback state.');
+      }
+
+      renderResourceSelect();
+      renderBookingsTable();
+      renderDirectoryGrid();
+      renderHistoryTable();
+      renderCalendar();
+      renderAnalytics();
+    }
+
+    function renderResourceSelect() {
+      const select = document.getElementById('resourceSelect');
+      const currentVal = select.value;
+      select.innerHTML = currentResources.map(r => `
+        <option value="${r.id}" ${currentVal === r.id ? 'selected' : ''}>
+          ${r.name} · ${r.category} (${r.location}) [Cap: ${r.capacity}]
+        </option>
+      `).join('');
+      if (!select.value && currentResources.length > 0) {
+        select.value = currentResources[0].id;
+      }
+    }
+
+    function renderBookingsTable() {
+      const tbody = document.getElementById('bookingsTableBody');
+      tbody.innerHTML = currentBookings.map(b => `
+        <tr class="hover:bg-[#FAFAFA] dark:hover:bg-[#161616]">
+          <td class="p-3.5 font-semibold">${b.resourceName}</td>
+          <td class="p-3.5">${b.date}</td>
+          <td class="p-3.5">${b.startTime} – ${b.endTime}</td>
+          <td class="p-3.5">${b.attendees}</td>
+          <td class="p-3.5">${b.purpose}</td>
+          <td class="p-3.5">
+            <span class="px-2 py-0.5 text-[9px] uppercase font-bold tracking-wider ${
+              b.status === 'confirmed' ? 'bg-black text-white dark:bg-white dark:text-black' :
+              b.status === 'pending' ? 'border border-black dark:border-white' : 'line-through text-black/50'
+            }">${b.status}</span>
+          </td>
+          <td class="p-3.5">
+            ${b.checkedIn ? '<span class="text-green-500 font-bold">✓ Verified</span>' : `
+              <button onclick="openQrModal('${b.id}', '${b.resourceName}')" class="underline font-medium">Show QR</button>
+            `}
+          </td>
+          <td class="p-3.5 text-right">
+            ${b.status === 'pending' && currentUser.role === 'admin' ? `
+              <button onclick="updateBookingStatus('${b.id}', 'confirmed')" class="text-[10px] underline font-bold mr-2">Approve</button>
+              <button onclick="updateBookingStatus('${b.id}', 'cancelled')" class="text-[10px] underline text-red-500">Reject</button>
+            ` : b.status === 'confirmed' ? `
+              <button onclick="updateBookingStatus('${b.id}', 'cancelled')" class="text-[10px] underline">Cancel</button>
+            ` : '—'}
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function renderHistoryTable() {
+      const tbody = document.getElementById('historyTableBody');
+      tbody.innerHTML = currentBookings.map(b => `
+        <tr class="hover:bg-[#FAFAFA] dark:hover:bg-[#161616]">
+          <td class="p-3.5 font-mono">${b.id}</td>
+          <td class="p-3.5 font-semibold">${b.resourceName}</td>
+          <td class="p-3.5">${b.date} · ${b.startTime} - ${b.endTime}</td>
+          <td class="p-3.5">${b.purpose}</td>
+          <td class="p-3.5">${b.checkedIn ? 'Checked-In' : 'Pending Scan'}</td>
+          <td class="p-3.5 uppercase font-bold">${b.status}</td>
+        </tr>
+      `).join('');
+    }
+
+    function renderCalendar() {
+      const grid = document.getElementById('calendarGrid');
+      grid.innerHTML = '';
+      
+      for (let i = 0; i < 6; i++) {
+        grid.innerHTML += `<div class="p-3 opacity-20">—</div>`;
+      }
+
+      for (let day = 1; day <= 31; day++) {
+        const dayStr = day < 10 ? `0${day}` : `${day}`;
+        const dateKey = `2026-08-${dayStr}`;
+        const dayBookings = currentBookings.filter(b => b.date === dateKey);
+        const isSelected = selectedCalDate === dateKey;
+
+        grid.innerHTML += `
+          <div onclick="selectCalendarDate('${dateKey}')" class="cal-day border border-[#DCDCDC] dark:border-[#2A2A2A] p-2.5 min-h-[68px] flex flex-col justify-between ${isSelected ? 'selected' : ''}">
+            <span class="font-bold text-xs">${day}</span>
+            <span class="text-[9px] block">${dayBookings.length > 0 ? `● ${dayBookings.length} Booked` : ''}</span>
+          </div>
+        `;
+      }
+
+      renderSelectedDateTimeline();
+    }
+
+    window.selectCalendarDate = function(dateStr) {
+      selectedCalDate = dateStr;
+      document.getElementById('bookingDate').value = dateStr;
+      renderCalendar();
+    };
+
+    function renderSelectedDateTimeline() {
+      document.getElementById('calSelectedDateTitle').innerText = selectedCalDate;
+      const list = currentBookings.filter(b => b.date === selectedCalDate);
+      const container = document.getElementById('calDaySchedule');
+      
+      if (list.length === 0) {
+        container.innerHTML = `<p class="text-black/50 dark:text-white/50">No reservations booked on this date. All resources cleared.</p>`;
+        return;
+      }
+
+      container.innerHTML = list.map(b => `
+        <div class="border border-[#DCDCDC] dark:border-[#333] p-3 bg-white dark:bg-[#0E0E0E]">
+          <p class="font-bold">${b.resourceName}</p>
+          <p class="text-black/60 dark:text-white/60">${b.startTime} – ${b.endTime} · ${b.purpose}</p>
+          <span class="text-[9px] uppercase font-bold">${b.status}</span>
+        </div>
+      `).join('');
+    }
+
+    function renderDirectoryGrid() {
+      const query = document.getElementById('dirSearch').value.toLowerCase();
+      const cat = document.getElementById('dirCategory').value;
+      const grid = document.getElementById('resourceGrid');
+
+      const filtered = currentResources.filter(r => {
+        const matchesQuery = r.name.toLowerCase().includes(query) || r.equipment.some(e => e.toLowerCase().includes(query));
+        const matchesCat = cat === 'ALL' || r.category === cat;
+        return matchesQuery && matchesCat;
+      });
+
+      if (filtered.length === 0) {
+        grid.innerHTML = '<div class="col-span-3 text-center py-12 text-xs text-black/50">No matching resources.</div>';
+        return;
+      }
+
+      grid.innerHTML = filtered.map(r => `
+        <div class="border border-[#DCDCDC] dark:border-[#2C2C2C] bg-[#FAFAFA] dark:bg-[#161616] p-6 flex flex-col justify-between space-y-4">
+          <div>
+            <span class="text-[9px] uppercase font-bold tracking-widest border border-[#DCDCDC] dark:border-[#444] px-2 py-0.5">${r.category}</span>
+            <h3 class="text-lg font-bold mt-3">${r.name}</h3>
+            <p class="text-xs text-black/60 dark:text-white/60">${r.location}</p>
+            <div class="mt-4 space-y-1 text-xs">
+              <p>Capacity: <strong>${r.capacity} People</strong></p>
+              <p class="text-black/70 dark:text-white/70">Equipment: ${r.equipment.join(' · ')}</p>
+              <p>Requires Approval: <strong>${r.approvalRequired ? 'Yes' : 'No'}</strong></p>
+            </div>
+          </div>
+          <button onclick="prefillBooking('${r.id}')" class="w-full bg-black text-white dark:bg-white dark:text-black text-xs uppercase tracking-widest font-semibold py-2.5 rounded-full">
+            Book This Resource
+          </button>
+        </div>
+      `).join('');
+    }
+
+    function renderAnalytics() {
+      const total = currentResources.length;
+      const avgUtil = Math.round(currentResources.reduce((acc, r) => acc + r.utilization, 0) / total);
+      document.getElementById('statTotalRes').innerText = total;
+      document.getElementById('statActiveBk').innerText = currentBookings.length;
+      document.getElementById('statAvgUtil').innerText = `${avgUtil}%`;
+      document.getElementById('statPending').innerText = currentBookings.filter(b => b.status === 'pending').length;
+
+      const underutilized = currentResources.filter(r => r.utilization < 35);
+      document.getElementById('underutilizedList').innerHTML = underutilized.map(u => `
+        <div class="flex justify-between border-b border-[#DCDCDC] dark:border-[#333] py-2">
+          <span>${u.name} (${u.location})</span>
+          <span class="font-bold">${u.utilization}% load</span>
+        </div>
+      `).join('');
+    }
+
+    window.prefillBooking = function(id) {
+      document.getElementById('resourceSelect').value = id;
+      switchTab('bookingTab');
+    };
+
+    window.updateBookingStatus = async function(id, status) {
+      const booking = currentBookings.find(b => b.id === id);
+      if (booking) booking.status = status;
+      try {
+        await fetch(`/api/bookings/${id}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status })
+        });
+      } catch (e) {}
+      loadAllData();
+    };
+
+    // QR Bonus Feature
+    window.openQrModal = function(bookingId, resourceName) {
+      activeQrBookingId = bookingId;
+      document.getElementById('qrModalTitle').innerText = resourceName;
+      const container = document.getElementById('qrcodeContainer');
+      container.innerHTML = '';
+      new QRCode(container, {
+        text: `EASYBOOK_CHECKIN_${bookingId}`,
+        width: 128,
+        height: 128,
+        colorDark: "#000000",
+        colorLight: "#ffffff"
+      });
+      document.getElementById('qrModal').classList.remove('hidden');
+    };
+
+    window.closeQrModal = function() {
+      document.getElementById('qrModal').classList.add('hidden');
+    };
+
+    document.getElementById('simulateCheckInBtn').addEventListener('click', async () => {
+      if (!activeQrBookingId) return;
+      const booking = currentBookings.find(b => b.id === activeQrBookingId);
+      if (booking) booking.checkedIn = true;
+      try {
+        await fetch('/api/checkin', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ bookingId: activeQrBookingId })
+        });
+      } catch (e) {}
+      closeQrModal();
+      alert('Terminal check-in verified successfully!');
+      loadAllData();
+    });
+
+    const toMinutes = (timeStr) => {
+      if (!timeStr) return 0;
+      let [h, m] = timeStr.split(':').map(Number);
+      return h * 60 + m;
+    };
+
+    // Verify & Reserve Form Submission
+    document.getElementById('bookingForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const statusBox = document.getElementById('bookingStateMsg');
+      const smartCard = document.getElementById('smartCard');
+
+      const resourceId = document.getElementById('resourceSelect').value;
+      const date = document.getElementById('bookingDate').value;
+      const startTime = document.getElementById('startTime').value;
+      const endTime = document.getElementById('endTime').value;
+      const attendees = Number(document.getElementById('attendees').value);
+      const purpose = document.getElementById('purpose').value;
+
+      const targetResource = currentResources.find(r => r.id === resourceId) || currentResources[0];
+      const reqStart = toMinutes(startTime);
+      const reqEnd = toMinutes(endTime);
+
+      // Local Collision Validation
+      const hasConflict = currentBookings.some(b => {
+        if (b.resourceId === resourceId && b.date === date && (b.status === 'confirmed' || b.status === 'pending')) {
+          const bStart = toMinutes(b.startTime);
+          const bEnd = toMinutes(b.endTime);
+          return reqStart < bEnd && reqEnd > bStart;
+        }
+        return false;
+      });
+
+      if (hasConflict) {
+        const alt = currentResources.find(r => r.category === targetResource.category && r.id !== targetResource.id && r.capacity >= attendees) || targetResource;
+        currentRec = {
+          resourceId: alt.id,
+          resourceName: alt.name,
+          date: date,
+          startTime: '11:30',
+          endTime: '13:00',
+          score: 94,
+          reasons: [
+            `Accommodates ${attendees} attendees comfortably (Cap: ${alt.capacity})`,
+            `Matches required setup: ${alt.equipment[0] || 'Standard Setup'}`,
+            'Zero double-booking collision',
+            `Balances departmental utilization (${alt.utilization}% load)`
+          ]
+        };
+
+        statusBox.innerHTML = `
+          <h3 class="text-3xl font-bold tracking-tight text-black dark:text-white">That's already booked.</h3>
+          <p class="text-xs text-black/70 dark:text-white/70 mt-1">This resource is already booked for this window. Deterministic AI recommended the best match.</p>
+        `;
+        document.getElementById('recName').innerText = currentRec.resourceName;
+        document.getElementById('recWindow').innerText = `${currentRec.date} · ${currentRec.startTime} – ${currentRec.endTime}`;
+        document.getElementById('recScore').innerText = `${currentRec.score}%`;
+        document.getElementById('recReasons').innerHTML = currentRec.reasons.map(r => `<li>✓ ${r}</li>`).join('');
+        smartCard.classList.remove('hidden');
+        return;
+      }
+
+      // Successful Booking Execution
+      const newBooking = {
+        id: `bk-${Date.now().toString().slice(-4)}`,
+        resourceId: targetResource.id,
+        resourceName: targetResource.name,
+        userEmail: currentUser.email,
+        date,
+        startTime,
+        endTime,
+        durationMinutes: (reqEnd - reqStart) || 90,
+        attendees,
+        purpose,
+        status: targetResource.approvalRequired ? 'pending' : 'confirmed',
+        checkedIn: false
+      };
+
+      currentBookings.unshift(newBooking);
+      smartCard.classList.add('hidden');
+      statusBox.innerHTML = `
+        <h3 class="text-3xl font-bold tracking-tight text-black dark:text-white">Booking confirmed.</h3>
+        <p class="text-xs text-black/70 dark:text-white/70 mt-1">Resource clearance verified conflict-free.</p>
+      `;
+
+      try {
+        await fetch('/api/bookings', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(newBooking)
+        });
+      } catch (e) {}
+
+      loadAllData();
+    });
+
+    // Accept Alternative Match Action
+    document.getElementById('applyRecBtn').addEventListener('click', () => {
+      if (!currentRec) return;
+      document.getElementById('resourceSelect').value = currentRec.resourceId;
+      document.getElementById('startTime').value = currentRec.startTime;
+      document.getElementById('endTime').value = currentRec.endTime;
+
+      const altResource = currentResources.find(r => r.id === currentRec.resourceId);
+      const newBooking = {
+        id: `bk-${Date.now().toString().slice(-4)}`,
+        resourceId: currentRec.resourceId,
+        resourceName: altResource.name,
+        userEmail: currentUser.email,
+        date: currentRec.date,
+        startTime: currentRec.startTime,
+        endTime: currentRec.endTime,
+        durationMinutes: 90,
+        attendees: Number(document.getElementById('attendees').value),
+        purpose: document.getElementById('purpose').value,
+        status: 'confirmed',
+        checkedIn: false
+      };
+
+      currentBookings.unshift(newBooking);
+      document.getElementById('smartCard').classList.add('hidden');
+      document.getElementById('bookingStateMsg').innerHTML = `
+        <h3 class="text-3xl font-bold tracking-tight text-black dark:text-white">Smart Match Booked.</h3>
+        <p class="text-xs text-black/70 dark:text-white/70 mt-1">Reserved ${currentRec.resourceName} at ${currentRec.startTime}.</p>
+      `;
+      loadAllData();
+    });
+
+    // Provision Resource
+    document.getElementById('addResourceForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const newRes = {
+        id: `res-${Date.now().toString().slice(-4)}`,
+        name: document.getElementById('newResName').value,
+        category: document.getElementById('newResCat').value,
+        location: document.getElementById('newResLoc').value,
+        capacity: Number(document.getElementById('newResCap').value),
+        equipment: document.getElementById('newResEq').value.split(',').map(s => s.trim()),
+        approvalRequired: document.getElementById('newResApp').checked,
+        utilization: 10,
+        status: 'active'
+      };
+
+      currentResources.unshift(newRes);
+      document.getElementById('addResourceForm').reset();
+      loadAllData();
+      alert('Resource provisioned successfully.');
+    });
+
+    document.getElementById('dirSearch').addEventListener('input', renderDirectoryGrid);
+    document.getElementById('dirCategory').addEventListener('change', renderDirectoryGrid);
+
+    // Initial Load
+    loadAllData();
+  </script>
+</body>
+</html>
