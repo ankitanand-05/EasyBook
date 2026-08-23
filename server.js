@@ -12,7 +12,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Firebase Admin Initialization
+// Firebase Admin Initialization below
 const serviceAccount = require('./serviceAccountKey.json');
 
 if (getApps().length === 0) {
@@ -60,7 +60,7 @@ app.post('/api/auth/register', async (req, res) => {
   }
 });
 
-// 2. Fetch User Profile
+// 2. Fetch User Profile also it is saved there on data base 
 app.post('/api/auth/login', async (req, res) => {
   const { email, role } = req.body;
   try {
@@ -136,7 +136,7 @@ const toMinutes = (timeStr) => {
   const [h, m] = timeStr.split(':').map(Number);
   return h * 60 + m;
 };
-
+// Shows all the available resources used 
 // ==================== BOOKING & RESOURCE ROUTES ====================
 
 app.get('/api/resources', async (req, res) => {
@@ -246,3 +246,5 @@ app.listen(PORT, async () => {
   console.log(`EasyBook server running on http://localhost:${PORT}`);
   await initFirestoreData();
 });
+
+//  For Authentication Email/password is enabled  where user and admin can give there repective emailId and password to login 
