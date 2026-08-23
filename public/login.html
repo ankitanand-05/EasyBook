@@ -1,221 +1,308 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>EasyBook — Sign In & Register</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          colors: {
-            brand: {
-              white: '#FFFFFF',
-              nearWhite: '#FAFAFA',
-              lightGray: '#DCDCDC',
-              darkGray: '#1C1C1C',
-              black: '#000000'
-            }
-          }
-        }
-      }
-    }
-  </script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/global.css" />
   <style>
-    body { font-family: 'Inter', sans-serif; }
-    .auth-tab.active { border-bottom: 2px solid currentColor; font-weight: 700; color: inherit; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    body {
+      background-color: #0b0b0b;
+      color: #ffffff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .hero-text {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .hero-text h1 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+    }
+
+    .hero-text p {
+      color: #888888;
+      margin-top: 12px;
+      font-size: 0.95rem;
+    }
+
+    .auth-card {
+      background-color: #141414;
+      border: 1px solid #242424;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 440px;
+      padding: 28px;
+    }
+
+    .portal-toggle {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      background-color: #000000;
+      border-radius: 8px;
+      padding: 4px;
+      margin-bottom: 24px;
+    }
+
+    .portal-toggle button {
+      background: transparent;
+      border: none;
+      color: #888888;
+      padding: 10px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .portal-toggle button.active {
+      background-color: #ffffff;
+      color: #000000;
+    }
+
+    .tab-switch {
+      display: flex;
+      border-bottom: 1px solid #242424;
+      margin-bottom: 24px;
+    }
+
+    .tab-switch button {
+      flex: 1;
+      background: none;
+      border: none;
+      color: #888888;
+      padding: 12px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s;
+    }
+
+    .tab-switch button.active {
+      color: #ffffff;
+      border-bottom: 2px solid #ffffff;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      color: #aaaaaa;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 12px 14px;
+      background-color: #000000;
+      border: 1px solid #2e2e2e;
+      border-radius: 6px;
+      color: #ffffff;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .form-group input:focus {
+      border-color: #555555;
+    }
+
+    .error-box {
+      display: none;
+      background-color: rgba(220, 38, 38, 0.1);
+      border: 1px solid rgba(220, 38, 38, 0.3);
+      color: #f87171;
+      padding: 10px 14px;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      margin-bottom: 18px;
+      word-break: break-word;
+    }
+
+    .submit-btn {
+      width: 100%;
+      background-color: #ffffff;
+      color: #000000;
+      border: none;
+      padding: 14px;
+      border-radius: 9999px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      text-transform: uppercase;
+      transition: opacity 0.2s;
+    }
+
+    .submit-btn:hover {
+      opacity: 0.9;
+    }
+
+    .submit-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
   </style>
 </head>
-<body class="bg-white dark:bg-[#0E0E0E] text-black dark:text-white min-h-screen flex flex-col justify-between p-6 md:p-12 transition-colors duration-300">
+<body>
 
-  <!-- Header -->
-  <header class="flex justify-between items-center w-full max-w-5xl mx-auto">
-    <div class="flex items-center space-x-3">
-      <span class="text-xl font-bold tracking-tighter uppercase">EasyBook</span>
-      <span class="text-[10px] tracking-widest uppercase border border-[#DCDCDC] dark:border-[#2C2C2C] px-2 py-0.5 rounded-full text-black/60 dark:text-white/60">SaaS Platform</span>
-    </div>
-    <button id="themeToggle" class="text-xs uppercase tracking-wider border border-[#DCDCDC] dark:border-[#333] px-3.5 py-1.5 rounded-full hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition">
-      LIGHT MODE
-    </button>
-  </header>
+  <div class="hero-text">
+    <h1>Book smarter.<br>Use resources better.</h1>
+    <p>Institutional resource scheduling with real-time Firebase syncing.</p>
+  </div>
 
-  <!-- Dual-Role Auth Terminal -->
-  <main class="w-full max-w-md mx-auto my-8">
-    <div class="mb-6 text-center md:text-left">
-      <h1 class="text-3xl md:text-5xl font-bold tracking-tight mb-2">Book smarter.<br>Use resources better.</h1>
-      <p class="text-xs text-black/60 dark:text-white/60">Unified resource scheduling with conflict detection & live analytics.</p>
+  <div class="auth-card">
+    <div class="portal-toggle">
+      <button type="button" class="active" id="portalCustomerBtn">Customer Portal</button>
+      <button type="button" id="portalAdminBtn">Admin Portal</button>
     </div>
 
-    <!-- Main Container -->
-    <div class="bg-[#FAFAFA] dark:bg-[#161616] border border-[#DCDCDC] dark:border-[#2C2C2C] p-6 space-y-6">
-      
-      <!-- Role Switcher -->
-      <div class="grid grid-cols-2 gap-2 p-1 bg-white dark:bg-[#0E0E0E] border border-[#DCDCDC] dark:border-[#2C2C2C] text-xs uppercase tracking-wider font-semibold text-center">
-        <button type="button" id="roleCustomerBtn" onclick="selectRole('customer')" class="py-2 bg-black text-white dark:bg-white dark:text-black transition">
-          Customer Portal
-        </button>
-        <button type="button" id="roleAdminBtn" onclick="selectRole('admin')" class="py-2 text-black/60 dark:text-white/60 transition">
-          Admin Portal
-        </button>
-      </div>
-
-      <!-- Action Mode Tabs (Login vs Sign Up) -->
-      <div class="flex border-b border-[#DCDCDC] dark:border-[#2C2C2C] text-xs uppercase tracking-widest">
-        <button id="tabLogin" onclick="setAuthMode('login')" class="auth-tab active flex-1 pb-2 text-center">Sign In</button>
-        <button id="tabSignup" onclick="setAuthMode('signup')" class="auth-tab flex-1 pb-2 text-center text-black/50 dark:text-white/50">Register</button>
-      </div>
-
-      <!-- Form Component -->
-      <form id="authForm" class="space-y-4 text-xs">
-        <div id="nameField" class="hidden">
-          <label class="block text-[10px] uppercase font-bold tracking-widest mb-1">Full Name</label>
-          <input type="text" id="nameInput" placeholder="Jane Doe" class="w-full bg-white dark:bg-[#0E0E0E] border border-[#DCDCDC] dark:border-[#333] px-3.5 py-2.5 focus:outline-none">
-        </div>
-
-        <div>
-          <label class="block text-[10px] uppercase font-bold tracking-widest mb-1">Email Address</label>
-          <input type="email" id="emailInput" required value="alex@easybook.io" placeholder="alex@easybook.io" class="w-full bg-white dark:bg-[#0E0E0E] border border-[#DCDCDC] dark:border-[#333] px-3.5 py-2.5 focus:outline-none">
-        </div>
-
-        <div>
-          <label class="block text-[10px] uppercase font-bold tracking-widest mb-1">Password</label>
-          <input type="password" id="passwordInput" required value="password123" placeholder="••••••••" class="w-full bg-white dark:bg-[#0E0E0E] border border-[#DCDCDC] dark:border-[#333] px-3.5 py-2.5 focus:outline-none">
-        </div>
-
-        <div id="authAlert" class="text-xs text-red-500 hidden font-medium"></div>
-
-        <button type="submit" id="authSubmitBtn" class="w-full bg-black text-white dark:bg-white dark:text-black uppercase tracking-widest font-bold py-3.5 rounded-full hover:opacity-90 transition">
-          Sign In as Customer
-        </button>
-      </form>
-
-      <!-- Quick Credentials Helper for Demo -->
-      <div class="border-t border-[#DCDCDC] dark:border-[#2C2C2C] pt-3 text-[11px] text-black/50 dark:text-white/50 space-y-1">
-        <p><strong>Demo Customer:</strong> alex@easybook.io / password123</p>
-        <p><strong>Demo Admin:</strong> admin@easybook.io / adminpassword</p>
-      </div>
+    <div class="tab-switch">
+      <button type="button" id="tabSignIn">Sign In</button>
+      <button type="button" class="active" id="tabRegister">Register</button>
     </div>
-  </main>
 
-  <footer class="w-full max-w-5xl mx-auto flex justify-between text-xs text-black/50 dark:text-white/50">
-    <span>© 2026 EasyBook Platform</span>
-    <span>Zero double-booking guarantee</span>
-  </footer>
+    <form id="authForm">
+      <div class="form-group" id="nameGroup">
+        <label for="fullName">Full Name</label>
+        <input type="text" id="fullName" placeholder="Your name" />
+      </div>
 
-  <script>
-    let currentRole = 'customer';
-    let currentMode = 'login';
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <input type="email" id="email" placeholder="name@easybook.io" required />
+      </div>
 
-    // Theme Switcher
-    const themeToggleBtn = document.getElementById('themeToggle');
-    const savedTheme = localStorage.getItem('easybook_theme') || 'dark';
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" placeholder="••••••••" required />
+      </div>
 
-    function applyTheme(theme) {
-      if (theme === 'dark') {
-        document.documentElement.classList.add('dark');
-        themeToggleBtn.innerText = 'LIGHT MODE';
+      <div class="error-box" id="errorBox"></div>
+
+      <button type="submit" class="submit-btn" id="submitBtn">Create Customer Account</button>
+    </form>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { 
+      getAuth, 
+      createUserWithEmailAndPassword, 
+      signInWithEmailAndPassword, 
+      updateProfile 
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBzgqurt9okbcqnD6gs7UEqg-xfVZytV6U",
+      authDomain: "easybook-app-9c740.firebaseapp.com",
+      projectId: "easybook-app-9c740",
+      storageBucket: "easybook-app-9c740.firebasestorage.app",
+      messagingSenderId: "591471730753",
+      appId: "1:591471730753:web:f33cdadbd9345eaf45e6c0"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    let mode = 'register';
+    let portal = 'customer';
+
+    const tabSignIn = document.getElementById('tabSignIn');
+    const tabRegister = document.getElementById('tabRegister');
+    const nameGroup = document.getElementById('nameGroup');
+    const submitBtn = document.getElementById('submitBtn');
+    const errorBox = document.getElementById('errorBox');
+    const authForm = document.getElementById('authForm');
+    const portalCustomerBtn = document.getElementById('portalCustomerBtn');
+    const portalAdminBtn = document.getElementById('portalAdminBtn');
+
+    function updateUI() {
+      errorBox.style.display = 'none';
+      if (mode === 'register') {
+        nameGroup.style.display = 'block';
+        submitBtn.textContent = portal === 'customer' ? 'Create Customer Account' : 'Create Admin Account';
+        tabRegister.classList.add('active');
+        tabSignIn.classList.remove('active');
       } else {
-        document.documentElement.classList.remove('dark');
-        themeToggleBtn.innerText = 'DARK MODE';
+        nameGroup.style.display = 'none';
+        submitBtn.textContent = portal === 'customer' ? 'Sign In to Customer Portal' : 'Sign In to Admin Portal';
+        tabSignIn.classList.add('active');
+        tabRegister.classList.remove('active');
       }
-      localStorage.setItem('easybook_theme', theme);
     }
-    applyTheme(savedTheme);
 
-    themeToggleBtn.addEventListener('click', () => {
-      const isDark = document.documentElement.classList.contains('dark');
-      applyTheme(isDark ? 'light' : 'dark');
+    tabSignIn.addEventListener('click', () => { mode = 'signIn'; updateUI(); });
+    tabRegister.addEventListener('click', () => { mode = 'register'; updateUI(); });
+
+    portalCustomerBtn.addEventListener('click', () => {
+      portal = 'customer';
+      portalCustomerBtn.classList.add('active');
+      portalAdminBtn.classList.remove('active');
+      updateUI();
     });
 
-    function selectRole(role) {
-      currentRole = role;
-      const custBtn = document.getElementById('roleCustomerBtn');
-      const admBtn = document.getElementById('roleAdminBtn');
+    portalAdminBtn.addEventListener('click', () => {
+      portal = 'admin';
+      portalAdminBtn.classList.add('active');
+      portalCustomerBtn.classList.remove('active');
+      updateUI();
+    });
 
-      if (role === 'customer') {
-        custBtn.className = 'py-2 bg-black text-white dark:bg-white dark:text-black transition';
-        admBtn.className = 'py-2 text-black/60 dark:text-white/60 transition';
-        document.getElementById('emailInput').value = 'alex@easybook.io';
-        document.getElementById('passwordInput').value = 'password123';
-      } else {
-        admBtn.className = 'py-2 bg-black text-white dark:bg-white dark:text-black transition';
-        custBtn.className = 'py-2 text-black/60 dark:text-white/60 transition';
-        document.getElementById('emailInput').value = 'admin@easybook.io';
-        document.getElementById('passwordInput').value = 'adminpassword';
-      }
-      updateButtonText();
-    }
-
-    function setAuthMode(mode) {
-      currentMode = mode;
-      const loginTab = document.getElementById('tabLogin');
-      const signupTab = document.getElementById('tabSignup');
-      const nameField = document.getElementById('nameField');
-
-      if (mode === 'login') {
-        loginTab.classList.add('active');
-        loginTab.classList.remove('text-black/50', 'dark:text-white/50');
-        signupTab.classList.remove('active');
-        signupTab.classList.add('text-black/50', 'dark:text-white/50');
-        nameField.classList.add('hidden');
-      } else {
-        signupTab.classList.add('active');
-        signupTab.classList.remove('text-black/50', 'dark:text-white/50');
-        loginTab.classList.remove('active');
-        loginTab.classList.add('text-black/50', 'dark:text-white/50');
-        nameField.classList.remove('hidden');
-      }
-      updateButtonText();
-    }
-
-    function updateButtonText() {
-      const btn = document.getElementById('authSubmitBtn');
-      const roleTitle = currentRole === 'admin' ? 'Admin' : 'Customer';
-      btn.innerText = currentMode === 'login' ? `Sign In as ${roleTitle}` : `Create ${roleTitle} Account`;
-    }
-
-    // Form Submission
-    document.getElementById('authForm').addEventListener('submit', async (e) => {
+    authForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const alertBox = document.getElementById('authAlert');
-      alertBox.classList.add('hidden');
+      errorBox.style.display = 'none';
+      submitBtn.disabled = true;
 
-      const payload = {
-        email: document.getElementById('emailInput').value,
-        password: document.getElementById('passwordInput').value,
-        role: currentRole,
-        name: document.getElementById('nameInput').value
-      };
-
-      const endpoint = currentMode === 'login' ? '/api/auth/login' : '/api/auth/register';
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      const fullName = document.getElementById('fullName').value.trim();
 
       try {
-        const res = await fetch(endpoint, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-
-        const data = await res.json();
-
-        if (res.ok) {
-          localStorage.setItem('easybook_user', JSON.stringify(data.user));
-          window.location.href = 'dashboard.html';
+        if (mode === 'register') {
+          const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+          if (fullName) {
+            await updateProfile(userCredential.user, { displayName: fullName });
+          }
         } else {
-          alertBox.innerText = data.message || 'Authentication error';
-          alertBox.classList.remove('hidden');
+          await signInWithEmailAndPassword(auth, email, password);
         }
+
+        // Redirect based on portal type
+        window.location.href = portal === 'admin' ? 'admin.html' : 'dashboard.html';
       } catch (err) {
-        // Fallback for isolated offline runs
-        localStorage.setItem('easybook_user', JSON.stringify({ email: payload.email, role: currentRole }));
-        window.location.href = 'dashboard.html';
+        errorBox.textContent = err.message.replace('Firebase: ', '');
+        errorBox.style.display = 'block';
+      } finally {
+        submitBtn.disabled = false;
       }
     });
+
+    updateUI();
   </script>
 </body>
 </html>
