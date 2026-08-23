@@ -48,7 +48,6 @@
       flex-direction: column;
     }
 
-    /* Navigation */
     header {
       background-color: var(--bg-color);
       border-bottom: 1px solid var(--border-color);
@@ -206,7 +205,6 @@
       text-transform: uppercase;
     }
 
-    /* Main Container */
     main {
       flex: 1;
       max-width: 1300px;
@@ -223,7 +221,6 @@
       display: block;
     }
 
-    /* Header Title Area */
     .title-row {
       display: flex;
       align-items: flex-start;
@@ -257,7 +254,6 @@
       text-transform: uppercase;
     }
 
-    /* KPI Metrics Cards */
     .kpi-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -295,7 +291,6 @@
       margin-bottom: 14px;
     }
 
-    /* Table */
     .table-container {
       background-color: var(--card-bg);
       border: 1px solid var(--border-color);
@@ -352,6 +347,11 @@
       color: #ffffff;
     }
 
+    .status-rejected {
+      background-color: #2b1111;
+      color: #f87171;
+    }
+
     .actions-cell {
       display: flex;
       align-items: center;
@@ -391,7 +391,6 @@
       text-decoration: underline;
     }
 
-    /* Form */
     .form-card {
       background-color: var(--card-bg);
       border: 1px solid var(--border-color);
@@ -449,7 +448,6 @@
       margin-top: 18px;
     }
 
-    /* Insights */
     .insights-card {
       background-color: var(--card-bg);
       border: 1px solid var(--border-color);
@@ -481,96 +479,7 @@
       color: var(--text-main);
     }
 
-    /* CALENDAR VIEW */
-    .calendar-container {
-      display: grid;
-      grid-template-columns: 2fr 1fr;
-      gap: 28px;
-    }
-
-    .cal-grid-card {
-      background-color: var(--card-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 10px;
-      padding: 24px;
-    }
-
-    .cal-header-row {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      text-align: center;
-      font-size: 0.7rem;
-      font-weight: 800;
-      color: var(--text-dim);
-      text-transform: uppercase;
-      margin-bottom: 14px;
-    }
-
-    .cal-days-grid {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 8px;
-    }
-
-    .cal-day-cell {
-      aspect-ratio: 1;
-      border: 1px solid var(--border-subtle);
-      border-radius: 6px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      cursor: pointer;
-      position: relative;
-    }
-
-    .cal-day-cell:hover {
-      background-color: var(--hover-bg);
-    }
-
-    .cal-day-cell.active-selected {
-      border-color: var(--text-main);
-      color: var(--text-main);
-      font-weight: 800;
-    }
-
-    .cal-badge {
-      font-size: 0.6rem;
-      color: var(--text-dim);
-      margin-top: 4px;
-    }
-
-    .cal-day-cell.active-selected .cal-badge {
-      color: var(--text-main);
-    }
-
-    .cal-side-card {
-      background-color: var(--card-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 10px;
-      padding: 24px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-
-    .btn-view-system-load {
-      width: 100%;
-      background-color: var(--text-main);
-      color: var(--bg-color);
-      border: none;
-      padding: 12px;
-      border-radius: 6px;
-      font-weight: 800;
-      font-size: 0.75rem;
-      letter-spacing: 0.05em;
-      cursor: pointer;
-      text-transform: uppercase;
-    }
-
-    /* DIRECTORY VIEW */
+    /* Directory */
     .directory-controls {
       display: flex;
       align-items: center;
@@ -579,26 +488,17 @@
       gap: 16px;
     }
 
-    .dir-search-input {
+    .dir-search-input, .dir-filter-select {
       background-color: var(--card-bg);
       border: 1px solid var(--border-color);
       border-radius: 6px;
       color: var(--text-main);
       padding: 10px 16px;
       font-size: 0.85rem;
-      width: 320px;
       outline: none;
     }
 
-    .dir-filter-select {
-      background-color: var(--card-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 6px;
-      color: var(--text-main);
-      padding: 10px 16px;
-      font-size: 0.85rem;
-      outline: none;
-    }
+    .dir-search-input { width: 320px; }
 
     .directory-grid {
       display: grid;
@@ -658,7 +558,6 @@
       font-weight: 600;
     }
 
-    /* Footer */
     footer {
       border-top: 1px solid var(--border-subtle);
       padding: 24px 40px;
@@ -689,12 +588,12 @@
       
       <div class="alert-container">
         <button class="alert-btn" id="alertToggleBtn">
-          Alerts <span class="alert-count" id="pendingAlertCount">1</span>
+          Alerts <span class="alert-count" id="pendingAlertCount">0</span>
         </button>
         <div class="alert-dropdown" id="alertDropdown">
           <div class="alert-dropdown-header">Automated Notifications & Reminders</div>
-          <div class="alert-dropdown-item">Reminder: Badminton session starts in 42h.</div>
-          <div class="alert-dropdown-time">1h ago</div>
+          <div class="alert-dropdown-item" id="alertDropdownItem">All booking approval queues currently resolved.</div>
+          <div class="alert-dropdown-time">Live</div>
         </div>
       </div>
 
@@ -703,7 +602,7 @@
     </div>
   </header>
 
-  <!-- Section 1: Operations & Approvals -->
+  <!-- Section 1: Operations -->
   <main id="operationsSection" class="view-section active">
     <div class="title-row">
       <div>
@@ -713,7 +612,7 @@
       <div class="privilege-badge">ADMIN PRIVILEGES ACTIVE</div>
     </div>
 
-    <!-- 4 Metrics -->
+    <!-- 4 Live Metrics -->
     <div class="kpi-grid">
       <div class="kpi-card">
         <div class="kpi-label">Total Resources</div>
@@ -721,7 +620,7 @@
       </div>
       <div class="kpi-card">
         <div class="kpi-label">Total Bookings</div>
-        <div class="kpi-number" id="kpiTotalBookings">3</div>
+        <div class="kpi-number" id="kpiTotalBookings">0</div>
       </div>
       <div class="kpi-card">
         <div class="kpi-label">Avg. Utilization</div>
@@ -729,11 +628,11 @@
       </div>
       <div class="kpi-card">
         <div class="kpi-label">Pending Approvals</div>
-        <div class="kpi-number" id="kpiPendingApprovals">1</div>
+        <div class="kpi-number" id="kpiPendingApprovals">0</div>
       </div>
     </div>
 
-    <!-- Bookings Table -->
+    <!-- Approvals Queue Table -->
     <div class="section-title">PENDING BOOKING APPROVALS QUEUE</div>
     <div class="table-container">
       <table>
@@ -748,43 +647,14 @@
           </tr>
         </thead>
         <tbody id="bookingsTableBody">
-          <!-- Row 1 -->
-          <tr data-id="1">
-            <td>alex@easybook.io</td>
-            <td>Conference Room A</td>
-            <td>2026-08-25 : 10:00 - 11:30</td>
-            <td>Sprint Planning & Design Review</td>
-            <td><span class="status-badge status-confirmed">CONFIRMED</span></td>
-            <td><button class="btn-revoke" onclick="revokeBooking('1')">Revoke</button></td>
-          </tr>
-          <!-- Row 2 -->
-          <tr data-id="2">
-            <td>alex@easybook.io</td>
-            <td>Main Auditorium / Seminar Hall</td>
-            <td>2026-08-26 : 14:00 - 17:00</td>
-            <td>National Tech Hackathon Keynote</td>
-            <td><span class="status-badge status-pending" id="status-badge-2">PENDING</span></td>
-            <td id="action-cell-2">
-              <div class="actions-cell">
-                <button class="btn-approve" onclick="approveBooking('2')">APPROVE</button>
-                <button class="btn-reject" onclick="rejectBooking('2')">REJECT</button>
-              </div>
-            </td>
-          </tr>
-          <!-- Row 3 -->
-          <tr data-id="3">
-            <td>alex@easybook.io</td>
-            <td>Indoor Badminton & Squash Arena</td>
-            <td>2026-08-24 : 18:00 - 19:30</td>
-            <td>Inter-Department Tournament Practice</td>
-            <td><span class="status-badge status-confirmed">CONFIRMED</span></td>
-            <td><button class="btn-revoke" onclick="revokeBooking('3')">Revoke</button></td>
+          <tr>
+            <td colspan="6" style="text-align: center; color: var(--text-dim); padding: 24px;">Loading bookings...</td>
           </tr>
         </tbody>
       </table>
     </div>
 
-    <!-- Provision Form -->
+    <!-- Provision New Resource -->
     <div class="section-title">PROVISION NEW SHARED RESOURCE</div>
     <div class="form-card">
       <form id="provisionForm">
@@ -824,69 +694,7 @@
     </div>
   </main>
 
-  <!-- Section 2: Interactive Calendar -->
-  <main id="calendarSection" class="view-section">
-    <div class="title-row">
-      <div>
-        <div class="sub-tag">SCHEDULE GRID</div>
-        <h1 class="main-heading">Resource Calendar.</h1>
-      </div>
-      <div style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">
-        AUGUST 2026
-      </div>
-    </div>
-
-    <div class="calendar-container">
-      <div class="cal-grid-card">
-        <div class="cal-header-row">
-          <div>SUN</div><div>MON</div><div>TUE</div><div>WED</div><div>THU</div><div>FRI</div><div>SAT</div>
-        </div>
-        <div class="cal-days-grid" id="calDaysGrid">
-          <div class="cal-day-cell"></div>
-          <div class="cal-day-cell"></div>
-          <div class="cal-day-cell"></div>
-          <div class="cal-day-cell"></div>
-          <div class="cal-day-cell"></div>
-          <div class="cal-day-cell"></div>
-          <div class="cal-day-cell">1</div>
-
-          <div class="cal-day-cell">2</div><div class="cal-day-cell">3</div><div class="cal-day-cell">4</div>
-          <div class="cal-day-cell">5</div><div class="cal-day-cell">6</div><div class="cal-day-cell">7</div><div class="cal-day-cell">8</div>
-
-          <div class="cal-day-cell">9</div><div class="cal-day-cell">10</div><div class="cal-day-cell">11</div>
-          <div class="cal-day-cell">12</div><div class="cal-day-cell">13</div><div class="cal-day-cell">14</div><div class="cal-day-cell">15</div>
-
-          <div class="cal-day-cell">16</div><div class="cal-day-cell">17</div><div class="cal-day-cell">18</div>
-          <div class="cal-day-cell">19</div><div class="cal-day-cell">20</div><div class="cal-day-cell">21</div><div class="cal-day-cell">22</div>
-
-          <div class="cal-day-cell">23<span class="cal-badge">• 1 Booked</span></div>
-          <div class="cal-day-cell">24<span class="cal-badge">• 1 Booked</span></div>
-          <div class="cal-day-cell active-selected">25<span class="cal-badge">• 1 Booked</span></div>
-          <div class="cal-day-cell">26<span class="cal-badge">• 1 Booked</span></div>
-          <div class="cal-day-cell">27</div><div class="cal-day-cell">28</div><div class="cal-day-cell">29</div>
-
-          <div class="cal-day-cell">30</div><div class="cal-day-cell">31</div>
-        </div>
-      </div>
-
-      <div class="cal-side-card">
-        <div>
-          <div class="sub-tag" style="margin-bottom: 8px;">DAY SCHEDULE</div>
-          <div style="font-size: 1.4rem; font-weight: 800; margin-bottom: 24px;" id="selectedDateTitle">2026-08-25</div>
-          
-          <div style="background-color: var(--input-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 18px;" id="calendarScheduleCard">
-            <div style="font-weight: 700; font-size: 0.95rem; margin-bottom: 6px;">Conference Room A</div>
-            <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 12px;">10:00 - 11:30 &nbsp;•&nbsp; Sprint Planning & Design Review</div>
-            <span class="status-badge status-confirmed">CONFIRMED</span>
-          </div>
-        </div>
-
-        <button class="btn-view-system-load">VIEW SYSTEM LOAD</button>
-      </div>
-    </div>
-  </main>
-
-  <!-- Section 3: Resource Directory -->
+  <!-- Section 2: Directory -->
   <main id="directorySection" class="view-section">
     <div class="title-row" style="margin-bottom: 20px;">
       <h1 class="main-heading">Resource Directory.</h1>
@@ -903,8 +711,19 @@
       </div>
     </div>
 
-    <div class="directory-grid" id="directoryGrid">
-      <!-- Generated Cards -->
+    <div class="directory-grid" id="directoryGrid"></div>
+  </main>
+
+  <!-- Section 3: Interactive Calendar (Placeholder view) -->
+  <main id="calendarSection" class="view-section">
+    <div class="title-row">
+      <div>
+        <div class="sub-tag">SCHEDULE GRID</div>
+        <h1 class="main-heading">Resource Calendar.</h1>
+      </div>
+    </div>
+    <div style="background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 10px; padding: 40px; text-align: center; color: var(--text-muted);">
+      Interactive schedule synchronizing with real-time Firebase bookings.
     </div>
   </main>
 
@@ -914,10 +733,21 @@
     <span>Grayscale Minimalist System</span>
   </footer>
 
-  <!-- Firebase Auth & Page Logic -->
+  <!-- Firebase Scripts -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { 
+      getFirestore, 
+      collection, 
+      addDoc, 
+      doc, 
+      updateDoc, 
+      onSnapshot, 
+      query, 
+      orderBy,
+      serverTimestamp 
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyBzgqurt9okbcqnD6gs7UEqg-xfVZytV6U",
@@ -930,33 +760,39 @@
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
+    const db = getFirestore(app);
 
-    // Auth Guard
+    const adminEmailDisplay = document.getElementById('adminEmailDisplay');
+    const signOutBtn = document.getElementById('signOutBtn');
+    const themeToggleBtn = document.getElementById('themeToggleBtn');
+    const bookingsTableBody = document.getElementById('bookingsTableBody');
+    const kpiTotalBookings = document.getElementById('kpiTotalBookings');
+    const kpiPendingApprovals = document.getElementById('kpiPendingApprovals');
+    const pendingAlertCount = document.getElementById('pendingAlertCount');
+    const alertDropdownItem = document.getElementById('alertDropdownItem');
+
+    // 1. Auth Guard
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        document.getElementById('adminEmailDisplay').textContent = user.email;
+        adminEmailDisplay.textContent = user.email;
       } else {
         window.location.href = 'login.html';
       }
     });
 
-    document.getElementById('signOutBtn').addEventListener('click', async () => {
+    signOutBtn.addEventListener('click', async () => {
       await signOut(auth);
       window.location.href = 'login.html';
     });
 
-    // Theme Toggle
-    const themeToggleBtn = document.getElementById('themeToggleBtn');
     themeToggleBtn.addEventListener('click', () => {
       document.body.classList.toggle('light-mode');
-      const isLight = document.body.classList.contains('light-mode');
-      themeToggleBtn.textContent = isLight ? 'DARK MODE' : 'LIGHT MODE';
+      themeToggleBtn.textContent = document.body.classList.contains('light-mode') ? 'DARK MODE' : 'LIGHT MODE';
     });
 
-    // Tab Navigation
+    // 2. Tab Navigation
     const navTabs = document.querySelectorAll('.nav-tab');
     const sections = document.querySelectorAll('.view-section');
-
     navTabs.forEach(tab => {
       tab.addEventListener('click', () => {
         navTabs.forEach(t => t.classList.remove('active'));
@@ -966,18 +802,16 @@
       });
     });
 
-    // Alert Dropdown Toggle
+    // 3. Alert Dropdown Toggle
     const alertBtn = document.getElementById('alertToggleBtn');
     const alertDropdown = document.getElementById('alertDropdown');
     alertBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       alertDropdown.style.display = alertDropdown.style.display === 'block' ? 'none' : 'block';
     });
-    document.addEventListener('click', () => {
-      alertDropdown.style.display = 'none';
-    });
+    document.addEventListener('click', () => { alertDropdown.style.display = 'none'; });
 
-    // Initial Directory Data
+    // 4. Directory Data
     let directoryData = [
       { name: "Conference Room A", category: "Meeting Rooms", location: "Building B · 3rd Floor", capacity: "10 People", equipment: "4K Display · Video Conferencing · Whiteboard", approval: "No", util: "76%" },
       { name: "Conference Room B", category: "Meeting Rooms", location: "Building B · 2nd Floor", capacity: "12 People", equipment: "4K Display · Dual Microphones · Whiteboard", approval: "No", util: "42%" },
@@ -991,8 +825,8 @@
 
     function renderDirectory() {
       const grid = document.getElementById('directoryGrid');
-      const search = document.getElementById('dirSearch').value.toLowerCase();
-      const filter = document.getElementById('dirFilter').value;
+      const search = (document.getElementById('dirSearch') ? document.getElementById('dirSearch').value.toLowerCase() : '');
+      const filter = (document.getElementById('dirFilter') ? document.getElementById('dirFilter').value : 'ALL');
 
       grid.innerHTML = '';
       const filtered = directoryData.filter(item => {
@@ -1021,46 +855,75 @@
       });
     }
 
-    document.getElementById('dirSearch').addEventListener('input', renderDirectory);
-    document.getElementById('dirFilter').addEventListener('change', renderDirectory);
+    if (document.getElementById('dirSearch')) document.getElementById('dirSearch').addEventListener('input', renderDirectory);
+    if (document.getElementById('dirFilter')) document.getElementById('dirFilter').addEventListener('change', renderDirectory);
     renderDirectory();
 
-    // Booking Approval Handlers
-    window.approveBooking = function(id) {
-      document.getElementById(`status-badge-${id}`).className = 'status-badge status-confirmed';
-      document.getElementById(`status-badge-${id}`).textContent = 'CONFIRMED';
-      document.getElementById(`action-cell-${id}`).innerHTML = `<button class="btn-revoke" onclick="revokeBooking('${id}')">Revoke</button>`;
-      
-      document.getElementById('kpiPendingApprovals').textContent = '0';
-      document.getElementById('pendingAlertCount').textContent = '0';
+    // 5. Real-Time Firestore Bookings Synchronization
+    const q = query(collection(db, "bookings"), orderBy("createdAt", "desc"));
+    onSnapshot(q, (snapshot) => {
+      let pendingCount = 0;
+      let totalCount = snapshot.size;
+      bookingsTableBody.innerHTML = '';
+
+      if (snapshot.empty) {
+        bookingsTableBody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--text-dim); padding: 24px;">No bookings found.</td></tr>';
+      }
+
+      snapshot.forEach((docSnap) => {
+        const item = docSnap.data();
+        const id = docSnap.id;
+        const status = item.status || 'PENDING';
+
+        if (status === 'PENDING') pendingCount++;
+
+        let statusClass = 'status-pending';
+        if (status === 'CONFIRMED') statusClass = 'status-confirmed';
+        if (status === 'REJECTED') statusClass = 'status-rejected';
+
+        let decisionHtml = '';
+        if (status === 'PENDING') {
+          decisionHtml = `
+            <div class="actions-cell">
+              <button class="btn-approve" onclick="updateStatus('${id}', 'CONFIRMED')">APPROVE</button>
+              <button class="btn-reject" onclick="updateStatus('${id}', 'REJECTED')">REJECT</button>
+            </div>
+          `;
+        } else {
+          decisionHtml = `<button class="btn-revoke" onclick="updateStatus('${id}', 'PENDING')">Revoke</button>`;
+        }
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${item.user || 'alex@easybook.io'}</td>
+          <td style="color: var(--text-main); font-weight: 600;">${item.resource}</td>
+          <td>${item.dateTime || `${item.date} : ${item.window}`}</td>
+          <td>${item.purpose || 'General Booking'}</td>
+          <td><span class="status-badge ${statusClass}">${status}</span></td>
+          <td>${decisionHtml}</td>
+        `;
+        bookingsTableBody.appendChild(tr);
+      });
+
+      kpiTotalBookings.textContent = totalCount;
+      kpiPendingApprovals.textContent = pendingCount;
+      pendingAlertCount.textContent = pendingCount;
+      alertDropdownItem.textContent = pendingCount > 0 
+        ? `${pendingCount} booking(s) awaiting approval in queue.`
+        : 'All booking approval queues currently resolved.';
+    });
+
+    window.updateStatus = async (bookingId, newStatus) => {
+      try {
+        await updateDoc(doc(db, "bookings", bookingId), { status: newStatus });
+      } catch (err) {
+        alert("Failed to update status: " + err.message);
+      }
     };
 
-    window.rejectBooking = function(id) {
-      document.getElementById(`status-badge-${id}`).className = 'status-badge status-rejected';
-      document.getElementById(`status-badge-${id}`).textContent = 'REJECTED';
-      document.getElementById(`action-cell-${id}`).innerHTML = `<button class="btn-revoke" onclick="revokeBooking('${id}')">Revoke</button>`;
-      
-      document.getElementById('kpiPendingApprovals').textContent = '0';
-      document.getElementById('pendingAlertCount').textContent = '0';
-    };
-
-    window.revokeBooking = function(id) {
-      document.getElementById(`status-badge-${id}`).className = 'status-badge status-pending';
-      document.getElementById(`status-badge-${id}`).textContent = 'PENDING';
-      document.getElementById(`action-cell-${id}`).innerHTML = `
-        <div class="actions-cell">
-          <button class="btn-approve" onclick="approveBooking('${id}')">APPROVE</button>
-          <button class="btn-reject" onclick="rejectBooking('${id}')">REJECT</button>
-        </div>
-      `;
-      document.getElementById('kpiPendingApprovals').textContent = '1';
-      document.getElementById('pendingAlertCount').textContent = '1';
-    };
-
-    // Provision Resource Form Submission
+    // 6. Provision Resource Form
     document.getElementById('provisionForm').addEventListener('submit', (e) => {
       e.preventDefault();
-
       const name = document.getElementById('resName').value.trim();
       const category = document.getElementById('resCategory').value;
       const location = document.getElementById('resLocation').value.trim();
@@ -1070,23 +933,17 @@
 
       alert('New shared resource provisioned.');
 
-      // Update KPI metrics
       document.getElementById('kpiTotalResources').textContent = '9';
       document.getElementById('kpiAvgUtilization').textContent = '51%';
 
-      // Prepend to Directory
       directoryData.unshift({
-        name: name,
-        category: category,
-        location: location,
+        name, category, location,
         capacity: capacity + ' People',
-        equipment: equipment,
-        approval: requiresApproval,
+        equipment, approval: requiresApproval,
         util: '10%'
       });
       renderDirectory();
 
-      // Prepend to Usage Insights
       const insightsCard = document.getElementById('insightsCard');
       const newInsight = document.createElement('div');
       newInsight.className = 'insight-item';
@@ -1096,22 +953,8 @@
       `;
       insightsCard.insertBefore(newInsight, insightsCard.firstChild);
 
-      // Reset form
       document.getElementById('provisionForm').reset();
       document.getElementById('resRequiresApproval').checked = true;
-    });
-
-    // Calendar Selection
-    document.querySelectorAll('.cal-day-cell').forEach(cell => {
-      cell.addEventListener('click', () => {
-        if (!cell.textContent.trim()) return;
-        document.querySelectorAll('.cal-day-cell').forEach(c => c.classList.remove('active-selected'));
-        cell.classList.add('active-selected');
-        
-        const dayNum = parseInt(cell.textContent, 10);
-        const dayStr = dayNum < 10 ? '0' + dayNum : '' + dayNum;
-        document.getElementById('selectedDateTitle').textContent = `2026-08-${dayStr}`;
-      });
     });
   </script>
 </body>
