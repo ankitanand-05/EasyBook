@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EasyBook — Smart Scheduling</title>
+  <title>EasyBook — Customer Workspace</title>
   <style>
     :root {
       --bg-color: #0b0b0b;
@@ -16,6 +16,7 @@
       --btn-active-bg: #1a1a1a;
       --input-bg: #000000;
       --input-border: #262626;
+      --hover-bg: #181818;
     }
 
     body.light-mode {
@@ -29,6 +30,7 @@
       --btn-active-bg: #e5e5e7;
       --input-bg: #fdfdfd;
       --input-border: #d1d1d6;
+      --hover-bg: #f0f0f2;
     }
 
     * {
@@ -148,6 +150,14 @@
       width: 100%;
       margin: 0 auto;
       padding: 36px 40px;
+    }
+
+    .view-section {
+      display: none;
+    }
+
+    .view-section.active {
+      display: block;
     }
 
     .title-row {
@@ -275,6 +285,7 @@
     .engine-desc {
       font-size: 0.85rem;
       color: var(--text-muted);
+      line-height: 1.4;
     }
 
     .engine-footer {
@@ -284,6 +295,7 @@
       color: var(--text-dim);
       border-top: 1px solid var(--border-subtle);
       padding-top: 16px;
+      margin-top: 24px;
     }
 
     .table-container {
@@ -347,6 +359,8 @@
       text-decoration: underline;
       font-size: 0.78rem;
       cursor: pointer;
+      background: none;
+      border: none;
     }
 
     .verified-pill {
@@ -363,6 +377,201 @@
       background: none;
       border: none;
     }
+
+    /* CALENDAR */
+    .calendar-container {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 28px;
+    }
+
+    .cal-grid-card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 24px;
+    }
+
+    .cal-header-row {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      text-align: center;
+      font-size: 0.7rem;
+      font-weight: 800;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    .cal-days-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 8px;
+    }
+
+    .cal-day-cell {
+      aspect-ratio: 1;
+      border: 1px solid var(--border-subtle);
+      border-radius: 6px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      position: relative;
+    }
+
+    .cal-day-cell:hover {
+      background-color: var(--hover-bg);
+    }
+
+    .cal-day-cell.active-selected {
+      border-color: var(--text-main);
+      color: var(--text-main);
+      font-weight: 800;
+    }
+
+    .cal-badge {
+      font-size: 0.6rem;
+      color: var(--text-dim);
+      margin-top: 4px;
+    }
+
+    .cal-day-cell.active-selected .cal-badge {
+      color: var(--text-main);
+    }
+
+    .cal-side-card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    /* DIRECTORY */
+    .directory-controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+      gap: 16px;
+    }
+
+    .dir-search-input, .dir-filter-select {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      color: var(--text-main);
+      padding: 10px 16px;
+      font-size: 0.85rem;
+      outline: none;
+    }
+
+    .dir-search-input { width: 320px; }
+
+    .directory-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .dir-card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 250px;
+    }
+
+    .dir-badge {
+      display: inline-block;
+      font-size: 0.65rem;
+      font-weight: 800;
+      color: var(--text-muted);
+      border: 1px solid var(--border-color);
+      padding: 3px 8px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 16px;
+      align-self: flex-start;
+    }
+
+    .dir-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+
+    .dir-location {
+      font-size: 0.82rem;
+      color: var(--text-dim);
+      margin-bottom: 16px;
+    }
+
+    .dir-detail {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .dir-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 20px;
+      border-top: 1px solid var(--border-subtle);
+      padding-top: 14px;
+    }
+
+    .btn-book-now {
+      background-color: var(--text-main);
+      color: var(--bg-color);
+      border: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+      font-size: 0.72rem;
+      font-weight: 800;
+      cursor: pointer;
+      text-transform: uppercase;
+    }
+
+    .qr-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.8);
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+    }
+
+    .qr-modal-content {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 32px;
+      text-align: center;
+      max-width: 320px;
+      width: 100%;
+    }
+
+    footer {
+      border-top: 1px solid var(--border-subtle);
+      padding: 24px 40px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      color: var(--text-dim);
+    }
   </style>
 </head>
 <body>
@@ -375,10 +584,10 @@
         <span class="customer-pill">CUSTOMER</span>
       </div>
       <nav class="nav-links">
-        <button class="nav-tab active">Booking Hub</button>
-        <button class="nav-tab">Interactive Calendar</button>
-        <button class="nav-tab">Resource Directory</button>
-        <button class="nav-tab">My Bookings</button>
+        <button class="nav-tab active" data-target="bookingHubSection">Booking Hub</button>
+        <button class="nav-tab" data-target="calendarSection">Interactive Calendar</button>
+        <button class="nav-tab" data-target="directorySection">Resource Directory</button>
+        <button class="nav-tab" data-target="myBookingsSection">My Bookings</button>
       </nav>
     </div>
     <div class="nav-right">
@@ -388,7 +597,8 @@
     </div>
   </header>
 
-  <main>
+  <!-- VIEW 1: BOOKING HUB -->
+  <main id="bookingHubSection" class="view-section active">
     <div class="title-row">
       <div>
         <div class="sub-tag">CUSTOMER WORKSPACE</div>
@@ -400,7 +610,7 @@
     </div>
 
     <div class="scheduling-grid">
-      <!-- Create Reservation -->
+      <!-- Create Reservation Form -->
       <div>
         <div class="section-title">CREATE RESERVATION</div>
         <div class="form-card">
@@ -411,10 +621,10 @@
               <option value="Conference Room B">Conference Room B · Meeting Rooms (Building B · 2nd Floor) [Cap: 12]</option>
               <option value="Main Auditorium / Seminar Hall">Main Auditorium / Seminar Hall · Seminar Halls (Central Block · Ground Floor) [Cap: 250]</option>
               <option value="Advanced IoT & Robotics Lab">Advanced IoT & Robotics Lab · Labs & Equipment (Tech Complex · Lab 104) [Cap: 35]</option>
-              <option value="Indoor Badminton & Squash Arena">Indoor Badminton & Squash Arena · Sports Facilities (Sports Complex · Courts 1-2) [Cap: 8]</option>
+              <option value="Indoor Badminton & Squash Arena" selected>Indoor Badminton & Squash Arena · Sports Facilities (Sports Complex · Courts 1-2) [Cap: 8]</option>
               <option value="High-Performance Computing Cluster">High-Performance Computing Cluster · Labs & Equipment (Server Wing · Room C) [Cap: 40]</option>
               <option value="Podcast & Media Studio">Podcast & Media Studio · Workspaces (Media Center · Room 102) [Cap: 6]</option>
-              <option value="4K Cinema Drone & Photography Kit" selected>4K Cinema Drone & Photography Kit · Labs & Equipment (Media Locker 08) [Cap: 2]</option>
+              <option value="4K Cinema Drone & Photography Kit">4K Cinema Drone & Photography Kit · Labs & Equipment (Media Locker 08) [Cap: 2]</option>
             </select>
 
             <div class="form-row-2">
@@ -432,12 +642,12 @@
               <div>
                 <label class="field-label">START TIME</label>
                 <select id="startTime" class="form-select">
-                  <option value="08:00 AM" selected>08:00 AM</option>
+                  <option value="08:00 AM">08:00 AM</option>
                   <option value="09:00 AM">09:00 AM</option>
                   <option value="10:00 AM">10:00 AM</option>
                   <option value="11:30 AM">11:30 AM</option>
                   <option value="02:00 PM">02:00 PM</option>
-                  <option value="04:00 PM">04:00 PM</option>
+                  <option value="04:00 PM" selected>04:00 PM</option>
                   <option value="06:00 PM">06:00 PM</option>
                 </select>
               </div>
@@ -445,23 +655,23 @@
                 <label class="field-label">END TIME</label>
                 <select id="endTime" class="form-select">
                   <option value="09:30 AM">09:30 AM</option>
-                  <option value="11:30 AM" selected>11:30 AM</option>
+                  <option value="11:30 AM">11:30 AM</option>
                   <option value="01:00 PM">01:00 PM</option>
                   <option value="05:00 PM">05:00 PM</option>
-                  <option value="07:30 PM">07:30 PM</option>
+                  <option value="07:30 PM" selected>07:30 PM</option>
                 </select>
               </div>
             </div>
 
             <label class="field-label">BOOKING PURPOSE</label>
-            <input type="text" id="bookingPurpose" class="form-input" value="Sprint Roadmap Review" required />
+            <input type="text" id="bookingPurpose" class="form-input" value="badminton practice" required />
 
             <button type="submit" class="btn-verify" id="reserveBtn">VERIFY & RESERVE</button>
           </form>
         </div>
       </div>
 
-      <!-- Engine Status -->
+      <!-- Engine Status Box -->
       <div>
         <div class="section-title">ENGINE STATUS</div>
         <div class="engine-card">
@@ -478,7 +688,7 @@
       </div>
     </div>
 
-    <!-- User Specific Bookings -->
+    <!-- Active Reservations Table -->
     <div class="section-title">MY ACTIVE RESERVATIONS</div>
     <div class="table-container">
       <table>
@@ -503,6 +713,142 @@
     </div>
   </main>
 
+  <!-- VIEW 2: INTERACTIVE CALENDAR -->
+  <main id="calendarSection" class="view-section">
+    <div class="title-row">
+      <div>
+        <div class="sub-tag">SCHEDULE GRID</div>
+        <h1 class="main-heading">Resource Calendar.</h1>
+      </div>
+      <div style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">
+        AUGUST 2026
+      </div>
+    </div>
+
+    <div class="calendar-container">
+      <div class="cal-grid-card">
+        <div class="cal-header-row">
+          <div>SUN</div><div>MON</div><div>TUE</div><div>WED</div><div>THU</div><div>FRI</div><div>SAT</div>
+        </div>
+        <div class="cal-days-grid" id="calDaysGrid">
+          <div class="cal-day-cell"></div><div class="cal-day-cell"></div><div class="cal-day-cell"></div>
+          <div class="cal-day-cell"></div><div class="cal-day-cell"></div><div class="cal-day-cell"></div>
+          <div class="cal-day-cell">1</div>
+
+          <div class="cal-day-cell">2</div><div class="cal-day-cell">3</div><div class="cal-day-cell">4</div>
+          <div class="cal-day-cell">5</div><div class="cal-day-cell">6</div><div class="cal-day-cell">7</div><div class="cal-day-cell">8</div>
+
+          <div class="cal-day-cell">9</div><div class="cal-day-cell">10</div><div class="cal-day-cell">11</div>
+          <div class="cal-day-cell">12</div><div class="cal-day-cell">13</div><div class="cal-day-cell">14</div><div class="cal-day-cell">15</div>
+
+          <div class="cal-day-cell">16</div><div class="cal-day-cell">17</div><div class="cal-day-cell">18</div>
+          <div class="cal-day-cell">19</div><div class="cal-day-cell">20</div><div class="cal-day-cell">21</div><div class="cal-day-cell">22</div>
+
+          <div class="cal-day-cell">23<span class="cal-badge">• 1 Booked</span></div>
+          <div class="cal-day-cell">24<span class="cal-badge">• 1 Booked</span></div>
+          <div class="cal-day-cell active-selected" data-date="2026-08-25">25<span class="cal-badge">• 1 Booked</span></div>
+          <div class="cal-day-cell" data-date="2026-08-26">26<span class="cal-badge">• 1 Booked</span></div>
+          <div class="cal-day-cell">27</div><div class="cal-day-cell">28</div><div class="cal-day-cell">29</div>
+
+          <div class="cal-day-cell" data-date="2026-08-30">30<span class="cal-badge">• 1 Booked</span></div><div class="cal-day-cell">31</div>
+        </div>
+      </div>
+
+      <div class="cal-side-card">
+        <div>
+          <div class="sub-tag" style="margin-bottom: 8px;">DAY SCHEDULE</div>
+          <div style="font-size: 1.4rem; font-weight: 800; margin-bottom: 24px;" id="selectedDateTitle">2026-08-25</div>
+          
+          <div style="background-color: var(--input-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 18px;" id="calendarScheduleCard">
+            <div style="font-weight: 700; font-size: 0.95rem; margin-bottom: 6px;" id="calResourceTitle">Conference Room A</div>
+            <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 12px;" id="calResourceDetail">10:00 - 11:30 &nbsp;•&nbsp; Sprint Planning & Design Review</div>
+            <span class="status-badge status-confirmed" id="calResourceStatus">CONFIRMED</span>
+          </div>
+        </div>
+
+        <button class="btn-verify" style="margin-top: 24px;" onclick="goToBookingDate('2026-08-25')">BOOK THIS DAY</button>
+      </div>
+    </div>
+  </main>
+
+  <!-- VIEW 3: RESOURCE DIRECTORY -->
+  <main id="directorySection" class="view-section">
+    <div class="title-row" style="margin-bottom: 20px;">
+      <h1 class="main-heading">Resource Directory.</h1>
+      <div class="directory-controls">
+        <input type="text" id="dirSearch" class="dir-search-input" placeholder="Search resources, equipment, halls..." />
+        <select id="dirFilter" class="dir-filter-select">
+          <option value="ALL">All Categories</option>
+          <option value="Meeting Rooms">Meeting Rooms</option>
+          <option value="Seminar Halls">Seminar Halls</option>
+          <option value="Labs & Equipment">Labs & Equipment</option>
+          <option value="Sports Facilities">Sports Facilities</option>
+          <option value="Workspaces">Workspaces</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="directory-grid" id="directoryGrid"></div>
+  </main>
+
+  <!-- VIEW 4: MY BOOKINGS -->
+  <main id="myBookingsSection" class="view-section">
+    <div class="title-row">
+      <div>
+        <div class="sub-tag">ACCOUNT PROFILE</div>
+        <h1 class="main-heading">My Bookings Manager.</h1>
+      </div>
+    </div>
+
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>RESOURCE</th>
+            <th>DATE</th>
+            <th>WINDOW</th>
+            <th>ATTENDEES</th>
+            <th>PURPOSE</th>
+            <th>STATUS</th>
+            <th>ACCESS PASS</th>
+            <th>ACTION</th>
+          </tr>
+        </thead>
+        <tbody id="myBookingsFullBody">
+          <tr>
+            <td colspan="8" style="text-align: center; color: var(--text-dim); padding: 24px;">Loading reservations...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+  <!-- QR Pass Modal -->
+  <div class="qr-modal" id="qrModal" onclick="closeQRModal()">
+    <div class="qr-modal-content" onclick="event.stopPropagation()">
+      <div style="font-size: 1.1rem; font-weight: 800; margin-bottom: 8px;" id="qrResourceName">Resource Pass</div>
+      <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 20px;" id="qrDetails">Confirmed Reservation</div>
+      <div style="background: #ffffff; padding: 16px; border-radius: 8px; display: inline-block; margin-bottom: 20px;">
+        <svg width="140" height="140" viewBox="0 0 100 100">
+          <rect width="100" height="100" fill="#ffffff"/>
+          <path d="M10,10 h30 v30 h-30 z M15,15 v20 h20 v-20 z M20,20 h10 v10 h-10 z" fill="#000000"/>
+          <path d="M60,10 h30 v30 h-30 z M65,15 v20 h20 v-20 z M70,20 h10 v10 h-10 z" fill="#000000"/>
+          <path d="M10,60 h30 v30 h-30 z M15,65 v20 h20 v-20 z M20,70 h10 v10 h-10 z" fill="#000000"/>
+          <rect x="50" y="50" width="10" height="10" fill="#000000"/>
+          <rect x="70" y="60" width="20" height="10" fill="#000000"/>
+          <rect x="60" y="80" width="30" height="10" fill="#000000"/>
+        </svg>
+      </div>
+      <button class="btn-verify" onclick="closeQRModal()">CLOSE PASS</button>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <span>EasyBook Architecture</span>
+    <span>Grayscale Minimalist System</span>
+  </footer>
+
   <!-- Firebase Scripts -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -512,10 +858,10 @@
       collection, 
       addDoc, 
       doc, 
-      deleteDoc,
+      deleteDoc, 
       onSnapshot, 
       query, 
-      where,
+      where, 
       getDocs, 
       serverTimestamp 
     } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
@@ -539,10 +885,27 @@
     const themeToggleBtn = document.getElementById('themeToggleBtn');
     const bookingForm = document.getElementById('bookingForm');
     const myReservationsBody = document.getElementById('myReservationsBody');
+    const myBookingsFullBody = document.getElementById('myBookingsFullBody');
     const engineTitle = document.getElementById('engineTitle');
     const engineDesc = document.getElementById('engineDesc');
 
-    // 1. Auth Guard & User-Scoped Listener
+    // 1. Tab Routing
+    const navTabs = document.querySelectorAll('.nav-tab');
+    const sections = document.querySelectorAll('.view-section');
+
+    navTabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        navTabs.forEach(t => t.classList.remove('active'));
+        sections.forEach(s => s.classList.remove('active'));
+        tab.classList.add('active');
+        const targetId = tab.dataset.target;
+        if (targetId && document.getElementById(targetId)) {
+          document.getElementById(targetId).classList.add('active');
+        }
+      });
+    });
+
+    // 2. Auth Guard
     onAuthStateChanged(auth, (user) => {
       if (user) {
         userEmailDisplay.textContent = user.email;
@@ -563,34 +926,31 @@
       themeToggleBtn.textContent = document.body.classList.contains('light-mode') ? 'DARK MODE' : 'LIGHT MODE';
     });
 
-    // 2. User-Specific Listener: Shows ONLY bookings made by this logged-in account
+    // 3. User Scoped Bookings Listener
     function attachUserBookingsListener(userId, userEmail) {
       if (unsubscribeUserBookings) unsubscribeUserBookings();
 
-      const q = query(
-        collection(db, "bookings"),
-        where("userId", "==", userId)
-      );
+      const q = query(collection(db, "bookings"), where("userId", "==", userId));
 
       unsubscribeUserBookings = onSnapshot(q, (snapshot) => {
         myReservationsBody.innerHTML = '';
+        myBookingsFullBody.innerHTML = '';
 
         if (snapshot.empty) {
-          myReservationsBody.innerHTML = '<tr><td colspan="8" style="text-align: center; color: var(--text-dim); padding: 24px;">No active reservations found for your account.</td></tr>';
+          const emptyHtml = '<tr><td colspan="8" style="text-align: center; color: var(--text-dim); padding: 24px;">No active reservations found for your account.</td></tr>';
+          myReservationsBody.innerHTML = emptyHtml;
+          myBookingsFullBody.innerHTML = emptyHtml;
           return;
         }
 
         const items = [];
         snapshot.forEach(docSnap => items.push({ id: docSnap.id, ...docSnap.data() }));
-
-        // Sort descending by creation date
         items.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
 
         items.forEach((item) => {
           const status = item.status || 'PENDING';
           const isConfirmed = status === 'CONFIRMED';
-          const tr = document.createElement('tr');
-          tr.innerHTML = `
+          const rowHtml = `
             <td style="color: var(--text-main); font-weight: 600;">${item.resource || 'Resource'}</td>
             <td>${item.date || '2026-08-25'}</td>
             <td>${item.window || '08:00 - 11:30'}</td>
@@ -600,11 +960,18 @@
             <td>
               ${item.accessPass === 'Verified' 
                 ? '<span class="verified-pill">✓ Verified</span>' 
-                : '<span class="link-show-qr">Show QR</span>'}
+                : `<button class="link-show-qr" onclick="showQRModal('${item.resource}', '${item.date} • ${item.window}')">Show QR</button>`}
             </td>
             <td><button class="btn-cancel-link" onclick="cancelBooking('${item.id}')">Cancel</button></td>
           `;
-          myReservationsBody.appendChild(tr);
+
+          const tr1 = document.createElement('tr');
+          tr1.innerHTML = rowHtml;
+          myReservationsBody.appendChild(tr1);
+
+          const tr2 = document.createElement('tr');
+          tr2.innerHTML = rowHtml;
+          myBookingsFullBody.appendChild(tr2);
         });
       });
     }
@@ -617,19 +984,158 @@
       }
     };
 
-    function parseTimeToMinutes(timeStr) {
-      if (timeStr.includes('AM') || timeStr.includes('PM')) {
-        const [time, modifier] = timeStr.split(' ');
-        let [hours, minutes] = time.split(':').map(Number);
-        if (modifier === 'PM' && hours < 12) hours += 12;
-        if (modifier === 'AM' && hours === 12) hours = 0;
-        return hours * 60 + minutes;
+    window.showQRModal = (name, details) => {
+      document.getElementById('qrResourceName').textContent = name;
+      document.getElementById('qrDetails').textContent = details;
+      document.getElementById('qrModal').style.display = 'flex';
+    };
+
+    window.closeQRModal = () => {
+      document.getElementById('qrModal').style.display = 'none';
+    };
+
+    // 4. Directory Data
+    const directoryData = [
+      { name: "Conference Room A", category: "Meeting Rooms", location: "Building B · 3rd Floor", capacity: "10 People", equipment: "4K Display · Video Conferencing · Whiteboard", approval: "No", util: "76%" },
+      { name: "Conference Room B", category: "Meeting Rooms", location: "Building B · 2nd Floor", capacity: "12 People", equipment: "4K Display · Dual Microphones · Whiteboard", approval: "No", util: "42%" },
+      { name: "Main Auditorium / Seminar Hall", category: "Seminar Halls", location: "Central Block · Ground Floor", capacity: "250 People", equipment: "Line Array Sound System · Dual Projectors · Wireless Mics", approval: "Yes", util: "62%" },
+      { name: "Advanced IoT & Robotics Lab", category: "Labs & Equipment", location: "Tech Complex · Lab 104", capacity: "35 People", equipment: "3D Printers · Oscilloscopes · GPU Workstations", approval: "Yes", util: "71%" },
+      { name: "Indoor Badminton & Squash Arena", category: "Sports Facilities", location: "Sports Complex · Courts 1-2", capacity: "8 People", equipment: "Wooden Flooring · LED Floodlights · Racket Sets", approval: "Yes", util: "84%" },
+      { name: "High-Performance Computing Cluster", category: "Labs & Equipment", location: "Server Wing · Room C", capacity: "40 People", equipment: "40x RTX 4090 Nodes · Gigabit Fiber · Dev Terminals", approval: "No", util: "52%" },
+      { name: "Podcast & Media Studio", category: "Workspaces", location: "Media Center · Room 102", capacity: "6 People", equipment: "Shure SM7B Mics · Rodecaster Pro · 4K Camera", approval: "No", util: "28%" },
+      { name: "4K Cinema Drone & Photography Kit", category: "Labs & Equipment", location: "Media Locker 08", capacity: "2 People", equipment: "DJI Mavic 3 Pro · Sony FX3 Cinema Kit · Tripods", approval: "Yes", util: "30%" }
+    ];
+
+    function renderDirectory() {
+      const grid = document.getElementById('directoryGrid');
+      const search = document.getElementById('dirSearch').value.toLowerCase();
+      const filter = document.getElementById('dirFilter').value;
+
+      grid.innerHTML = '';
+      const filtered = directoryData.filter(item => {
+        const matchesCat = filter === 'ALL' || item.category === filter;
+        const matchesSearch = item.name.toLowerCase().includes(search) || 
+                              item.equipment.toLowerCase().includes(search) || 
+                              item.location.toLowerCase().includes(search);
+        return matchesCat && matchesSearch;
+      });
+
+      filtered.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'dir-card';
+        card.innerHTML = `
+          <div>
+            <div class="dir-badge">${item.category}</div>
+            <div class="dir-title">${item.name}</div>
+            <div class="dir-location">${item.location}</div>
+            <div class="dir-detail"><strong>Capacity:</strong> ${item.capacity}</div>
+            <div class="dir-detail"><strong>Equipment:</strong> ${item.equipment}</div>
+            <div class="dir-detail"><strong>Requires Approval:</strong> ${item.approval}</div>
+          </div>
+          <div class="dir-actions">
+            <span style="font-size: 0.72rem; color: var(--text-dim);">Load: ${item.util}</span>
+            <button class="btn-book-now" onclick="selectResourceFromDirectory('${item.name}')">Book Resource</button>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    window.selectResourceFromDirectory = (name) => {
+      document.querySelector('[data-target="bookingHubSection"]').click();
+      const select = document.getElementById('resSelect');
+      for (let i = 0; i < select.options.length; i++) {
+        if (select.options[i].value === name) {
+          select.selectedIndex = i;
+          break;
+        }
       }
-      const [hours, minutes] = timeStr.split(':').map(Number);
+    };
+
+    document.getElementById('dirSearch').addEventListener('input', renderDirectory);
+    document.getElementById('dirFilter').addEventListener('change', renderDirectory);
+    renderDirectory();
+
+    // 5. Interactive Calendar
+    document.querySelectorAll('.cal-day-cell').forEach(cell => {
+      cell.addEventListener('click', () => {
+        if (!cell.textContent.trim()) return;
+        document.querySelectorAll('.cal-day-cell').forEach(c => c.classList.remove('active-selected'));
+        cell.classList.add('active-selected');
+        
+        const dayNum = parseInt(cell.textContent, 10);
+        const dayStr = dayNum < 10 ? '0' + dayNum : '' + dayNum;
+        const fullDate = `2026-08-${dayStr}`;
+        document.getElementById('selectedDateTitle').textContent = fullDate;
+
+        if (dayNum === 25) {
+          document.getElementById('calResourceTitle').textContent = "Conference Room A";
+          document.getElementById('calResourceDetail').textContent = "10:00 - 11:30 • Sprint Planning & Design Review";
+          document.getElementById('calResourceStatus').textContent = "CONFIRMED";
+        } else if (dayNum === 26) {
+          document.getElementById('calResourceTitle').textContent = "Main Auditorium / Seminar Hall";
+          document.getElementById('calResourceDetail').textContent = "14:00 - 17:00 • National Tech Hackathon Keynote";
+          document.getElementById('calResourceStatus').textContent = "PENDING";
+        } else if (dayNum === 30) {
+          document.getElementById('calResourceTitle').textContent = "Indoor Badminton & Squash Arena";
+          document.getElementById('calResourceDetail').textContent = "04:00 - 07:30 • badminton practice";
+          document.getElementById('calResourceStatus').textContent = "CONFIRMED";
+        } else {
+          document.getElementById('calResourceTitle').textContent = "No Scheduled Reservations";
+          document.getElementById('calResourceDetail').textContent = "All resource slots are cleared for booking.";
+          document.getElementById('calResourceStatus').textContent = "CLEAR";
+        }
+      });
+    });
+
+    window.goToBookingDate = (dateStr) => {
+      document.querySelector('[data-target="bookingHubSection"]').click();
+      document.getElementById('bookingDate').value = dateStr;
+    };
+
+    // 6. Unified Date, Time & Name Normalizers for Conflict Checking
+    function normalizeDate(dStr) {
+      if (!dStr) return '';
+      dStr = String(dStr).trim();
+      if (dStr.includes('/')) {
+        const parts = dStr.split('/');
+        if (parts[0].length === 4) {
+          return `${parts[0]}-${parts[1].padStart(2, '0')}-${parts[2].padStart(2, '0')}`;
+        }
+        return `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
+      }
+      return dStr;
+    }
+
+    function parseTimeToMinutes(timeStr) {
+      if (!timeStr) return 0;
+      timeStr = String(timeStr).trim().toUpperCase();
+      
+      const hasPM = timeStr.includes('PM');
+      const hasAM = timeStr.includes('AM');
+      const clean = timeStr.replace('AM', '').replace('PM', '').trim();
+      
+      let [hours, minutes] = clean.split(':').map(Number);
+      hours = hours || 0;
+      minutes = minutes || 0;
+
+      if (hasPM && hours < 12) hours += 12;
+      if (hasAM && hours === 12) hours = 0;
+
+      // Handle raw 12-hour values stored without AM/PM tags (e.g. 04:00 for afternoon)
+      if (!hasAM && !hasPM && hours >= 1 && hours <= 7) {
+        hours += 12; // Afternoon assumption for typical booking hours
+      }
+
       return hours * 60 + minutes;
     }
 
-    // 3. Conflict Detection across ALL bookings + User-Specific Saving
+    function normalizeResourceName(name) {
+      if (!name) return '';
+      return String(name).split('·')[0].trim().toLowerCase();
+    }
+
+    // 7. Complete Cross-User Conflict Check Engine
     bookingForm.addEventListener('submit', async (e) => {
       e.preventDefault();
 
@@ -639,9 +1145,11 @@
         return;
       }
 
-      const resource = document.getElementById('resSelect').value;
-      const date = document.getElementById('bookingDate').value;
-      const attendees = parseInt(document.getElementById('bookingAttendees').value, 10);
+      const resourceFullName = document.getElementById('resSelect').value;
+      const resourceCoreName = resourceFullName.split('·')[0].trim();
+      const rawDate = document.getElementById('bookingDate').value;
+      const targetDate = normalizeDate(rawDate);
+      const attendees = parseInt(document.getElementById('bookingAttendees').value, 10) || 1;
       const startStr = document.getElementById('startTime').value;
       const endStr = document.getElementById('endTime').value;
       const purpose = document.getElementById('bookingPurpose').value.trim();
@@ -656,43 +1164,60 @@
         return;
       }
 
-      // Check for overlapping bookings across all users for this resource & date
+      // Query ALL bookings across Firestore to verify availability
       const allBookingsSnap = await getDocs(collection(db, "bookings"));
       let conflictFound = false;
       let conflictingBooking = null;
 
       allBookingsSnap.forEach((docSnap) => {
         const b = docSnap.data();
-        if (b.resource === resource && b.date === date && b.status !== 'REJECTED') {
-          const [existStart, existEnd] = (b.window || "00:00 - 00:00").split(' - ');
-          const existStartMin = parseTimeToMinutes(existStart);
-          const existEndMin = parseTimeToMinutes(existEnd);
+        const existingStatus = (b.status || 'PENDING').toUpperCase();
 
-          if (newStartMin < existEndMin && newEndMin > existStartMin) {
-            conflictFound = true;
-            conflictingBooking = b;
+        if (existingStatus !== 'REJECTED') {
+          const docResource = normalizeResourceName(b.resource);
+          const currentResource = normalizeResourceName(resourceCoreName);
+          
+          // Match Date: check direct date or date part in dateTime string
+          let docDate = normalizeDate(b.date);
+          if (!docDate && b.dateTime) {
+            docDate = normalizeDate(b.dateTime.split(':')[0]);
+          }
+
+          if (docResource === currentResource && docDate === targetDate) {
+            const windowStr = b.window || (b.dateTime ? b.dateTime.substring(b.dateTime.indexOf(':') + 1) : "00:00 - 00:00");
+            const [existStart, existEnd] = windowStr.split('-').map(s => s.trim());
+            
+            const existStartMin = parseTimeToMinutes(existStart);
+            const existEndMin = parseTimeToMinutes(existEnd);
+
+            // True Time Overlap Formula: (StartA < EndB) && (EndA > StartB)
+            if (newStartMin < existEndMin && newEndMin > existStartMin) {
+              conflictFound = true;
+              conflictingBooking = { ...b, windowStr, date: docDate };
+            }
           }
         }
       });
 
+      // CONFLICT DETECTED -> Reject submission immediately
       if (conflictFound) {
         engineTitle.textContent = "Schedule Conflict Detected.";
         engineTitle.style.color = "#f87171";
-        engineDesc.textContent = `Conflict with "${conflictingBooking.purpose}" (${conflictingBooking.window}) on ${conflictingBooking.date}. Please select another window.`;
+        engineDesc.textContent = `Conflict with "${conflictingBooking.purpose || 'Existing Booking'}" (${conflictingBooking.window || conflictingBooking.windowStr}) on ${conflictingBooking.date}. The slot is already occupied.`;
         return;
       }
 
-      // Save reservation tagged with the user's uid and email
+      // NO CONFLICT -> Proceed to reserve slot in Firestore
       try {
-        const windowStr = `${startStr.replace(' AM', '').replace(' PM', '')} - ${endStr.replace(' AM', '').replace(' PM', '')}`;
+        const windowFormatted = `${startStr.replace(' AM', '').replace(' PM', '')} - ${endStr.replace(' AM', '').replace(' PM', '')}`;
 
         await addDoc(collection(db, "bookings"), {
           userId: user.uid,
           user: user.email,
-          resource,
-          date,
-          window: windowStr,
-          dateTime: `${date} : ${windowStr}`,
+          resource: resourceCoreName,
+          date: targetDate,
+          window: windowFormatted,
+          dateTime: `${targetDate} : ${windowFormatted}`,
           attendees,
           purpose,
           status: "PENDING",
