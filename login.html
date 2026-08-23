@@ -21,10 +21,7 @@
       }
     }
   </script>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-    body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
-  </style>
+  <link rel="stylesheet" href="login.css">
 </head>
 <body class="bg-[#FAFAFA] dark:bg-[#121212] text-[#000000] dark:text-[#FAFAFA] transition-colors duration-200 min-h-screen flex flex-col justify-between p-6 md:p-12">
   
@@ -88,74 +85,6 @@
   </footer>
 
   <script src="/function.js"></script>
-  <script>
-    // Authentication Page Controller
-    const themeBtn = document.getElementById('authThemeToggle');
-    const htmlEl = document.documentElement;
-    if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-      htmlEl.classList.add('dark');
-    }
-    themeBtn.addEventListener('click', () => {
-      htmlEl.classList.toggle('dark');
-      localStorage.theme = htmlEl.classList.contains('dark') ? 'dark' : 'light';
-    });
-
-    let isRegisterMode = false;
-    const tabLogin = document.getElementById('tabLogin');
-    const tabRegister = document.getElementById('tabRegister');
-    const nameWrapper = document.getElementById('nameWrapper');
-    const roleWrapper = document.getElementById('roleWrapper');
-    const authTitle = document.getElementById('authTitle');
-    const authSubmitBtn = document.getElementById('authSubmitBtn');
-    const authErrorMsg = document.getElementById('authErrorMsg');
-
-    tabLogin.addEventListener('click', () => {
-      isRegisterMode = false;
-      tabLogin.className = "pb-2 text-xs uppercase font-semibold border-b-2 border-black dark:border-white w-1/2 text-left";
-      tabRegister.className = "pb-2 text-xs uppercase font-semibold text-neutral-400 w-1/2 text-left";
-      nameWrapper.classList.add('hidden');
-      roleWrapper.classList.add('hidden');
-      authTitle.textContent = "Sign In";
-      authSubmitBtn.textContent = "Enter EasyBook";
-      authErrorMsg.classList.add('hidden');
-    });
-
-    tabRegister.addEventListener('click', () => {
-      isRegisterMode = true;
-      tabRegister.className = "pb-2 text-xs uppercase font-semibold border-b-2 border-black dark:border-white w-1/2 text-left";
-      tabLogin.className = "pb-2 text-xs uppercase font-semibold text-neutral-400 w-1/2 text-left";
-      nameWrapper.classList.remove('hidden');
-      roleWrapper.classList.remove('hidden');
-      authTitle.textContent = "Create Account";
-      authSubmitBtn.textContent = "Register & Connect";
-      authErrorMsg.classList.add('hidden');
-    });
-
-    document.getElementById('authForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      authErrorMsg.classList.add('hidden');
-      
-      const email = document.getElementById('authEmail').value.trim();
-      const password = document.getElementById('authPassword').value;
-      const name = document.getElementById('authName').value.trim();
-      const role = document.getElementById('authRole').value;
-
-      try {
-        let authResult;
-        if (isRegisterMode) {
-          authResult = await EasyBookAPI.register({ name, email, password, role });
-        } else {
-          authResult = await EasyBookAPI.login({ email, password });
-        }
-
-        localStorage.setItem('eb_token', authResult.token);
-        localStorage.setItem('eb_user', JSON.stringify(authResult.user));
-        window.location.href = '/dashboard';
-      } catch (err) {
-        authErrorMsg.textContent = err.message || 'Authentication failed';
-        authErrorMsg.classList.remove('hidden');
-      }
-    });
-  </script>
+  <script src="login.js"></script>
 </body>
 </html>
